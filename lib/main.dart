@@ -15,10 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
-
-  //final String url = "animalyu.monlau-smx.com";
-  final String unencodedPath = "/test/php/login.php";
-  final Map<String, String> headers = {'Content-type': 'application/json'};
+  // FIXME AQUI SE EDITA LO QUE SE ENVIA A LA BASE DE DATOS -> 'lo que encontrará el php':'el valor'
   final Map<String, String> body = {
     'username': 'animalyu',
     'password': 'Monlau2022@',
