@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -30,6 +29,7 @@ class _MyAppState extends State<MyApp> {
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: body);
     print(response.body.toString());
+
     return response;
   }
 
@@ -37,10 +37,10 @@ class _MyAppState extends State<MyApp> {
     makePostRequest(url, body);
   }
 
-  @override
-  void initState() {
-    makePostRequest(url, body);
-  }
+  //@override
+  //void initState() {
+  //  makePostRequest(url, body);
+ // }
 
   @override
   Widget build(BuildContext context) {
