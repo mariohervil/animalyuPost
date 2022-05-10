@@ -26,8 +26,7 @@ class _MyAppState extends State<MyApp> {
   'email': 'admin@gmail.com', 'phone':'93374638'
   };
 
-  Future<http.Response> makePostRequest(String url, String unencodedPath,
-      Map<String, String> header, Map<String, String> body) async {
+  Future<http.Response> makePostRequest(String url, Map<String, String> body) async {
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: body);
     print(response.body.toString());
@@ -35,19 +34,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void postData() async {
-    try {
-      final response = await http.post(Uri.parse(url),
-          body: {'mode':'insert', 'username': 'animalyu', 'password': 'Monlau2022@', 'email': 'admin@gmail.com', 'phone':'93374638'});
-
-      print(response.body.toString());
-    } catch (er) {
-      er.toString();
-    }
+    makePostRequest(url, body);
   }
 
   @override
   void initState() {
-    makePostRequest(url, unencodedPath, headers, body);
+    makePostRequest(url, body);
   }
 
   @override
