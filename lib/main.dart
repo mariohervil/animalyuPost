@@ -15,14 +15,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
+
   // FIXME AQUI SE EDITA LO QUE SE ENVIA A LA BASE DE DATOS -> 'lo que encontrará el php':'el valor'
   final Map<String, String> body = {
+    'mode': 'select',
     'username': 'animalyu',
     'password': 'Monlau2022@',
-  'email': 'admin@gmail.com', 'phone':'93374638'
+    'email': 'admin@gmail.com',
+    'phone': '93374638'
   };
 
-  Future<http.Response> makePostRequest(String url, Map<String, String> body) async {
+  Future<http.Response> makePostRequest(
+      String url, Map<String, String> body) async {
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: body);
     print(response.body.toString());
@@ -37,7 +41,7 @@ class _MyAppState extends State<MyApp> {
   //@override
   //void initState() {
   //  makePostRequest(url, body);
- // }
+  // }
 
   @override
   Widget build(BuildContext context) {
