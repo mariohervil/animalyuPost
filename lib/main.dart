@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 
 void main() => runApp(const MyApp());
@@ -51,12 +50,15 @@ class _MyAppState extends State<MyApp> {
 
   void checkLogin(String response) {
     if (response == "1") {
-      const CupertinoAlertDialog(
-        title: Text("Accept?"),
-        content: Text("Do you accept?"),
-        actions: [
-        ],
-      );
+      //ScaffoldMessenger()
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Logged In Successfully!"),
+      ));
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Failed to Log In"),
+      ));
     }
   }
 
@@ -65,7 +67,7 @@ class _MyAppState extends State<MyApp> {
   //  makePostRequest(url, body);
   // }
 
-  showAlertDialog(BuildContext context) async {
+  /*showAlertDialog(BuildContext context) async {
     // set up the button
     Widget okButton = TextButton(
       child: Text("OK"),
@@ -87,49 +89,42 @@ class _MyAppState extends State<MyApp> {
         builder: (BuildContext context) {
           return alert;
         });
-  }
+  }*/
 
+  @override
   Widget build(BuildContext context) {
     username = uNController.text;
     password = uPController.text;
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
             child: Column(
           children: [
-            ElevatedButton(
-              onPressed: postData,
-              child: const Text("Send Post"),
-            ),
             TextField(
                 controller: uNController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Username',
                     hintText: 'Enter Your Username')),
             TextField(
                 controller: uPController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Password',
-                    hintText: 'Enter Your Password'))
+                    hintText: 'Enter Your Password')),
+            ElevatedButton(
+              onPressed: postData,
+              child: const Text("Log in"),
+            )
           ],
-        )
-
-            // ElevatedButton
-            ),
-        // Center
+        )),
       ),
-      // Scaffold
-    ); // MaterialApp
+    );
   }
 }
-
-// set up the AlertDialog
-
-// show the dialog
 
 class MyHttpOverrides extends HttpOverrides {
   @override
