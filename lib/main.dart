@@ -43,29 +43,38 @@ class _MyAppState extends State<MyApp> {
   }
 
   void postData() async {
-    makePostRequest(url, registerBody);
+    username = uNController.text;
+    password = uPController.text;
+
+    Map<String, String> loginBody = {
+      'mode': 'login',
+      'username': username,
+      'password': password
+    };
+
+    //print(username + " " + password);
+    makePostRequest(url, loginBody);
   }
 
   void checkLogin(String response) {
+    //print(response);
     if (response == "1") {
       //ScaffoldMessenger()
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Logged In'), backgroundColor: Colors.green));
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text('Failed to Log In'), backgroundColor: Colors.green));
+          content: Text('Failed to Log In'), backgroundColor: Colors.red));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    username = uNController.text;
-    password = uPController.text;
-
+//${uNController.text}
     return MaterialApp(
-        theme: ThemeData(
-    snackBarTheme: const SnackBarThemeData(contentTextStyle: TextStyle(fontFamily: "Rubik-Light")
-    )),
+      theme: ThemeData(
+          snackBarTheme: const SnackBarThemeData(
+              contentTextStyle: TextStyle(fontFamily: "Rubik-Light"))),
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
