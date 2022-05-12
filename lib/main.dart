@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:prueba/RegisterApp.dart';
 
-void main() => runApp(const MyApp());
+void main(){runApp(const MaterialApp(
+title: 'Your title',
+home: MyApp(),));}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -12,6 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   static String username = "";
   static String password = "";
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -47,19 +51,16 @@ class _MyAppState extends State<MyApp> {
     password = uPController.text;
     try {
       if (username == "" && password == "") {
-        throw Exception("Username and Password Field are Empty");
+        _messengerKey.currentState?.showSnackBar(const SnackBar(
+            content: Text('Ambos campos vacíos'), backgroundColor: Colors.red));
       } else if (username == "") {
         throw Exception("Username Field is Empty");
-      } else if (password == "") {
-        throw Exception("Password Field is Empty");
       } else {
         Map<String, String> loginBody = {
           'mode': 'login',
           'username': username,
           'password': password
         };
-
-        //print(username + " " + password);
         makePostRequest(url, loginBody);
       }
     } on Exception catch (e) {
@@ -76,17 +77,20 @@ class _MyAppState extends State<MyApp> {
           content: Text('Logged In'), backgroundColor: Colors.green));
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text('Incorrect username or password'), backgroundColor: Colors.red));
+          content: Text('Incorrect username or password'),
+          backgroundColor: Colors.red));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-//${uNController.text}
+    final Color color = HexColor.fromHex('#D3D3D3');
+
     return MaterialApp(
       theme: ThemeData(
           snackBarTheme: const SnackBarThemeData(
-              contentTextStyle: TextStyle(fontFamily: "Rubik-Light"))),
+              contentTextStyle:
+                  TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -94,30 +98,85 @@ class _MyAppState extends State<MyApp> {
             child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.all(40.0),
-              child: Text("Log In Screen"),
+              padding: EdgeInsets.fromLTRB(60, 50, 0, 0),
+              // child: Text("Log In Screen"),
             ),
-            TextField(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 50, 30, 0),
+              child: TextField(
+                style: const TextStyle(fontSize: 20),
                 controller: uNController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
+                decoration: InputDecoration(
                     labelText: 'Username',
-                    hintText: 'Enter Your Username')),
-            TextField(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 3, color: color),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.blue),
+                      borderRadius: BorderRadius.circular(15),
+                    )),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
+              child: TextField(
+                style: const TextStyle(fontSize: 20),
                 controller: uPController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
+                decoration: InputDecoration(
                     labelText: 'Password',
-                    hintText: 'Enter Your Password')),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 3, color: color),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(width: 3, color: Colors.blue),
+                      borderRadius: BorderRadius.circular(15),
+                    )),
+              ),
+            ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 18)),
               onPressed: postData,
               child: const Text("Log in"),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(250, 10, 0, 0),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      //padding: const EdgeInsets.fromLTRB(250, 0, 0, 0),
+                      elevation: 0.00,
+                      primary: Colors.transparent,
+                      textStyle: const TextStyle(
+                          fontSize: 20, fontFamily: "Rubik-Light"),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                          side: BorderSide(color: Colors.transparent))),
+                  child: const Text(
+                    'Register Here',
+                    style: TextStyle(
+                        color: Colors.lightBlue,
+                        decoration: TextDecoration.underline),
+                  ),
+                  onPressed: () {
+                   // _navigateToNextScreen(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const RegisterApp()),);
+                  }),
+            )
           ],
         )),
       ),
     );
+  }
+
+  void _navigateToNextScreen(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const RegisterApp()));
   }
 }
 
@@ -128,4 +187,21 @@ class MyHttpOverrides extends HttpOverrides {
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
   }
+}
+
+extension HexColor on Color {
+  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
 }
