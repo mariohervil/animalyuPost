@@ -45,15 +45,27 @@ class _MyAppState extends State<MyApp> {
   void postData() async {
     username = uNController.text;
     password = uPController.text;
+    try {
+      if (username == "" && password == "") {
+        throw Exception("Username and Password Field are Empty");
+      } else if (username == "") {
+        throw Exception("Username Field is Empty");
+      } else if (password == "") {
+        throw Exception("Password Field is Empty");
+      } else {
+        Map<String, String> loginBody = {
+          'mode': 'login',
+          'username': username,
+          'password': password
+        };
 
-    Map<String, String> loginBody = {
-      'mode': 'login',
-      'username': username,
-      'password': password
-    };
-
-    //print(username + " " + password);
-    makePostRequest(url, loginBody);
+        //print(username + " " + password);
+        makePostRequest(url, loginBody);
+      }
+    } on Exception catch (e) {
+      _messengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red));
+    }
   }
 
   void checkLogin(String response) {
@@ -64,7 +76,7 @@ class _MyAppState extends State<MyApp> {
           content: Text('Logged In'), backgroundColor: Colors.green));
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text('Failed to Log In'), backgroundColor: Colors.red));
+          content: Text('Incorrect username or password'), backgroundColor: Colors.red));
     }
   }
 
@@ -81,6 +93,10 @@ class _MyAppState extends State<MyApp> {
         body: Center(
             child: Column(
           children: [
+            const Padding(
+              padding: EdgeInsets.all(40.0),
+              child: Text("Log In Screen"),
+            ),
             TextField(
                 controller: uNController,
                 decoration: const InputDecoration(
