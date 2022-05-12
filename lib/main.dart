@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,7 +14,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static String username = "";
   static String password = "";
-
+  final _messengerKey = GlobalKey<ScaffoldMessengerState>();
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
   TextEditingController uNController = TextEditingController();
   TextEditingController uPController = TextEditingController();
@@ -51,45 +49,13 @@ class _MyAppState extends State<MyApp> {
   void checkLogin(String response) {
     if (response == "1") {
       //ScaffoldMessenger()
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Logged In Successfully!"),
-      ));
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Failed to Log In"),
-      ));
+      _messengerKey.currentState?.showSnackBar(const SnackBar(
+          content: Text('Logged In'), backgroundColor: Colors.green));
+    } else {
+      _messengerKey.currentState?.showSnackBar(const SnackBar(
+          content: Text('Failed to Log In'), backgroundColor: Colors.green));
     }
   }
-
-  //@override
-  //void initState() {
-  //  makePostRequest(url, body);
-  // }
-
-  /*showAlertDialog(BuildContext context) async {
-    // set up the button
-    Widget okButton = TextButton(
-      child: Text("OK"),
-      onPressed: () {},
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("My title"),
-      content: Text("This is my message."),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        });
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +63,10 @@ class _MyAppState extends State<MyApp> {
     password = uPController.text;
 
     return MaterialApp(
+        theme: ThemeData(
+    snackBarTheme: const SnackBarThemeData(contentTextStyle: TextStyle(fontFamily: "Rubik-Light")
+    )),
+      scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
@@ -118,7 +88,7 @@ class _MyAppState extends State<MyApp> {
             ElevatedButton(
               onPressed: postData,
               child: const Text("Log in"),
-            )
+            ),
           ],
         )),
       ),
