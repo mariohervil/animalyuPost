@@ -26,10 +26,10 @@ class _MyAppState extends State<MyApp> {
           infoWindow: InfoWindow(
             title: office.name,
             snippet: office.address,
+              onTap: () {
+                print("Clicked: ${office.name}");
+              }
           ),
-            onTap: () {
-              print("Clicked: ${office.name}");
-            }
         );
         _markers[office.name] = marker;
       }
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Google Office Locations'),
+          title: const Text('Animalyu'),
           backgroundColor: Colors.green[700],
         ),
         body: GoogleMap(
