@@ -13,6 +13,7 @@ class LatLng {
   });
 
   factory LatLng.fromJson(Map<String, dynamic> json) => _$LatLngFromJson(json);
+
   Map<String, dynamic> toJson() => _$LatLngToJson(this);
 
   final double lat;
@@ -31,6 +32,7 @@ class Office {
   });
 
   factory Office.fromJson(Map<String, dynamic> json) => _$OfficeFromJson(json);
+
   Map<String, dynamic> toJson() => _$OfficeToJson(this);
 
   final String address;
@@ -49,9 +51,34 @@ class Locations {
 
   factory Locations.fromJson(Map<String, dynamic> json) =>
       _$LocationsFromJson(json);
+
   Map<String, dynamic> toJson() => _$LocationsToJson(this);
 
   final List<Office> offices;
+}
+
+@JsonSerializable()
+class Protectora {
+  Protectora({
+    required this.address,
+    required this.id,
+    required this.lat,
+    required this.lng,
+    required this.name,
+    required this.phone,
+  });
+
+  factory Protectora.fromJson(Map<String, dynamic> json) =>
+      _$ProtectoraFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProtectoraToJson(this);
+
+  final String address;
+  final String id;
+  final double lat;
+  final double lng;
+  final String name;
+  final String phone;
 }
 
 Future<Locations> getGoogleOffices() async {
