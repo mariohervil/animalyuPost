@@ -16,27 +16,6 @@ Map<String, dynamic> _$LatLngToJson(LatLng instance) => <String, dynamic>{
       'lng': instance.lng,
     };
 
-Protectora _$ProtectoraFromJson(Map<String, dynamic> json) => Protectora(
-      address: json['address'] as String,
-      id: json['id'] as String,
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
-      name: json['name'] as String,
-      phone: json['phone'] as String,
-
-    );
-
-Map<String, dynamic> _$ProtectoraToJson(Protectora instance) =>
-    <String, dynamic>{
-      'address': instance.address,
-      'id': instance.id,
-      'lat': instance.lat,
-      'lng': instance.lng,
-      'name': instance.name,
-      'phone': instance.phone,
-
-    };
-
 Office _$OfficeFromJson(Map<String, dynamic> json) => Office(
       address: json['address'] as String,
       id: json['id'] as String,
@@ -59,9 +38,27 @@ Locations _$LocationsFromJson(Map<String, dynamic> json) => Locations(
       offices: (json['offices'] as List<dynamic>)
           .map((e) => Office.fromJson(e as Map<String, dynamic>))
           .toList(),
-
     );
 
 Map<String, dynamic> _$LocationsToJson(Locations instance) => <String, dynamic>{
       'offices': instance.offices,
+    };
+
+Protectora _$ProtectoraFromJson(Map<String, dynamic> json) => Protectora(
+      address: json['address'] as String,
+      id: json['id'] as String,
+      lat: (json['lat'] as num).toDouble(),
+      lng: (json['lng'] as num).toDouble(),
+      name: json['name'] as String,
+      phone: json['phone'] as String,
+    );
+
+Map<String, dynamic> _$ProtectoraToJson(Protectora instance) =>
+    <String, dynamic>{
+      'address': instance.address,
+      'id': instance.id,
+      'lat': instance.lat,
+      'lng': instance.lng,
+      'name': instance.name,
+      'phone': instance.phone,
     };

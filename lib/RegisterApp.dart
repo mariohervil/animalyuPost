@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:geocoding/geocoding.dart';
 
 import 'main.dart';
 
@@ -152,6 +153,12 @@ class _RegisterAppState extends State<RegisterApp> {
     String password = uPController.text;
     String email = uEController.text;
     String phone = uPhController.text;
+
+    List<Location> locations = await locationFromAddress("Gronausestraat 710, Enschede");
+    locations.first.latitude;
+    locations.first.longitude;
+
+
     //print(username+ password + email+ phone);
     try {
       if (username == "" && password == "") {
