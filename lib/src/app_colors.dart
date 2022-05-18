@@ -31,7 +31,9 @@ class AppColors {
   static const Color darkBackground = Color(0xff100A2C);
   static const Color text = Color(0xff161616);
   static const Color background = Color(0xff2B2590);
-  static const Color disabled = Color(0xff989898);
+  static const Color animalyuLogo = Color(0xff38365b);
+  static const Color animalyuIcon = Color(0xff);
+  static const Color disabled = Color(0xffcf4645);
   static const Color error = Color(0xffff7466);
   static const Color greyText = Color(0xff565656);
   static const Color maticToken = Color(0xff85ECE9);
