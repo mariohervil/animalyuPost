@@ -36,6 +36,10 @@ class AppColors {
   static const Color disabled = Color(0xffcf4645);
   static const Color error = Color(0xffff7466);
   static const Color greyText = Color(0xff565656);
+  static const Color beige = Color(0xffe4d8c9);
+  static const Color marron = Color(0xff89767c);
+  static const Color marronOscuro = Color(0xff5f5557);
+  static const Color marronClaro = Color(0xffece2db);
   static const Color maticToken = Color(0xff85ECE9);
   static const Color sendPageBackground = Color(0xffBCB2FE);
   static const Color activeColor = Color(0xff241050);
