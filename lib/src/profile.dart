@@ -1,6 +1,7 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:ui' as ui;
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_in_flutter/src/app_colors.dart';
@@ -38,11 +39,44 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
+      body: Container(
+        color: AppColors.marronClaro,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ElevatedButton(onPressed: () {}, child: Text("Boton")),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ElevatedButton(onPressed: () {}, child: Text("Boton")),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ElevatedButton(onPressed: () {}, child: Text("Boton")),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(onPressed: () {}, child: Text("Boton")),
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
+  final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
+
   Future<ui.Image> loadImage() async {
     final imageBytes = await rootBundle.load('assets/texture.jpg');
     return decodeImageFromList(imageBytes.buffer.asUint8List());
@@ -55,9 +89,14 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     sleep(Duration(days: 0, hours: 0, minutes: 0, seconds: 1));
   }
 
+  static late String nombre;
+  static late String email;
+  static late String phone;
+
   @override
   Widget build(BuildContext context) {
     foto();
+    FillUser("1");
     return ClipPath(
       clipper: CClipper(),
       child: Container(
@@ -66,7 +105,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                 image: AssetImage("assets/animalyuTexture.jpg"),
                 opacity: 0.5,
                 fit: BoxFit.cover),
-              boxShadow: [
+            boxShadow: [
               BoxShadow(
                 color: Colors.white,
                 blurRadius: 20,
@@ -129,22 +168,77 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                           )),
                                       child: Column(
                                         children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 0, 120, 0),
+                                            child: CustomPaint(
+                                              foregroundPainter: LinePainter(),
+                                            ),
+                                          ),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-
                                               Padding(
-                                                padding: const EdgeInsets.all(8.0),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
                                                 child: Text(
                                                   "Nombre",
                                                   style: TextStyle(
-                                                    fontSize: 18,
-                                                      color: Colors.black),
+                                                      fontSize: 18,
+                                                      color: AppColors
+                                                          .marronOscuro),
                                                 ),
                                               ),
                                             ],
-                                          )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              nombre,
+                                              style: TextStyle(
+                                                  color:
+                                                      AppColors.marronOscuro),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              "Correo",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color:
+                                                      AppColors.marronOscuro),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              email,
+                                              style: TextStyle(
+                                                  color:
+                                                      AppColors.marronOscuro),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              "Teléfono",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color:
+                                                      AppColors.marronOscuro),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              phone,
+                                              style: TextStyle(
+                                                  color:
+                                                      AppColors.marronOscuro),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -216,13 +310,42 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     );
   }
 
+  Future<String> makePostRequest(String url, Map<String, String> body) async {
+    HttpOverrides.global = MyHttpOverrides();
+    final response = await http.post(Uri.parse(url), body: body);
+
+    return response.body;
+  }
+
+  void FillUser(String id) async {
+    Map<String, String> loginBody = {
+      'mode': 'selectUser',
+      'user_id': id,
+    };
+    String response = await makePostRequest(url, loginBody);
+    var arr = response.split(", ");
+    nombre = arr[0];
+    email = arr[1];
+    phone = arr[2];
+    sleep(Duration(seconds: 1));
+    print(response);
+  }
+
+  void FillShelter(String id) async {
+    Map<String, String> loginBody = {
+      'mode': 'selectUser',
+      'shelter_id': id,
+    };
+    makePostRequest(url, loginBody);
+  }
+
   @override
-  Size get preferredSize => const Size(double.infinity, 350);
+  ui.Size get preferredSize => const ui.Size(double.infinity, 350);
 }
 
 class CClipper extends CustomClipper<Path> {
   @override
-  Path getClip(Size size) {
+  Path getClip(ui.Size size) {
     Path p = Path();
     p.lineTo(0, size.height - 70);
     p.lineTo(size.width, size.height);
@@ -237,10 +360,26 @@ class CClipper extends CustomClipper<Path> {
   }
 }
 
+class CClipperLow extends CustomClipper<Path> {
+  @override
+  Path getClip(ui.Size size) {
+    Path p = Path();
+    p.lineTo(0, size.height);
+    p.lineTo(size.width, size.height);
+    p.lineTo(size.width, 0);
+    return p;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
 class CustomClipPath extends CustomClipper<Path> {
   //Size size= const Size(double.infinity, 100);
   @override
-  Path getClip(Size size) {
+  Path getClip(ui.Size size) {
     Path p = Path();
     p.lineTo(0, size.height - 34);
     p.lineTo(size.width, size.height);
@@ -251,5 +390,38 @@ class CustomClipPath extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
     return true;
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+class LinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, ui.Size size) {
+    size = ui.Size(183, 126);
+    final paint = Paint()
+      ..strokeWidth = 1
+      ..color = AppColors.marronTranslucido
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(Offset(size.width * 4 / 6, size.height * 1 / 2),
+        Offset(size.width * 0 / 6, size.height * 1 / 2), paint);
+    size = ui.Size(183, 263);
+    canvas.drawLine(Offset(size.width * 4 / 6, size.height * 1 / 2),
+        Offset(size.width * 0 / 6, size.height * 1 / 2), paint);
+    size = ui.Size(183, 400);
+    canvas.drawLine(Offset(size.width * 4 / 6, size.height * 1 / 2),
+        Offset(size.width * 0 / 6, size.height * 1 / 2), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

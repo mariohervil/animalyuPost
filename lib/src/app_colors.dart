@@ -39,6 +39,7 @@ class AppColors {
   static const Color beige = Color(0xffe4d8c9);
   static const Color marron = Color(0xff89767c);
   static const Color marronOscuro = Color(0xff5f5557);
+  static const Color marronTranslucido = Color(0x68B38773);
   static const Color marronClaro = Color(0xffece2db);
   static const Color maticToken = Color(0xff85ECE9);
   static const Color sendPageBackground = Color(0xffBCB2FE);
