@@ -1,3 +1,5 @@
-{"offices": [{"address": "Aabogade 15\n8200 Aarhus\nDinamarca", "id": "aarhus", "lat": 56.172249, "lng": 10.187372, "name": "Aarhus", "phone": "", "region": "europe"},
-  {"address": "Claude Debussylaan 34\n1082 MD, \u00c1msterdam\nPa\u00edses Bajos", "id": "amsterdam", "lat": 52.337801, "lng": 4.872066, "name": "\u00c1msterdam", "phone": "", "region": "europe"}]
-}
+{"offices": [{"address": "Carretera de l' Arrabassada, 250, 08035 Barcelona", "id": "centro1", "lat": 41.4344315, "lng": 2.1317195, "name": "Centro de Acogida de Animales de Compañía de Barcelona", "phone": "934 13 21 99"},
+  {"address": "Carrer del Guarda Anton, 10, 08035 Barcelona", "id": "centro2", "lat": 41.4169344, "lng": 2.1293896, "name": "Liga para la Protección de Animales y Plantas", "phone": "934 17 01 24"},
+  {"address": "Carrer de Trafalgar, 53, 08010 Barcelona", "id": "centro3", "lat": 41.390765, "lng": 2.178753, "name": "Altarriba Amigos de Los Animales", "phone": "993 412 00 73"},
+  {"address": "Carrer Nou de la Rambla, 14, 08001 Barcelona", "id": "centro4", "lat": 41.378967, "lng": 2.173861, "name": "El Jardinet dels Gats", "phone": "636 38 21 94"}
+]}
