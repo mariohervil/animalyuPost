@@ -92,7 +92,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     foto();
-    FillUser("1");
+    FillUser("212");
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -281,8 +281,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                     BorderRadius.all(Radius.circular(40)),
                                     image: DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            "https://images3.memedroid.com/images/UPLOADED753/618f10769197d.jpeg"))),
+                                        image: AssetImage(
+                                            "assets/cat.png"))),
                               ),
                             ),
                           ),
@@ -341,9 +341,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     };
     String response = await makePostRequest(url, loginBody);
     var arr = response.split(", ");
-    nombre = await arr[0];
-    email = await arr[1];
-    phone = await arr[2];
+    nombre = arr[0];
+    email = arr[1];
+    phone = arr[2];
     sleep(Duration(seconds: 1));
     print(response);
   }
