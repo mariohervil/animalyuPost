@@ -1,40 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'src/locations.dart' as locations;
+import 'package:google_maps_in_flutter/src/infoShelter_page.dart';
+import 'package:google_maps_in_flutter/src/locations.dart' as locations;
+import 'package:google_maps_in_flutter/src/map_page.dart';
+import 'package:google_maps_in_flutter/src/page_arguments.dart';
+import 'package:google_maps_in_flutter/src/pay_page.dart';
+import 'package:google_maps_in_flutter/util/page_directory.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      supportedLocales: const [
+        Locale('en', ''), // English, no country code
+        Locale('es', ''), // Spanish, no country code
+      ],
+      initialRoute: Routes.mapPage,
+      routes: {
+        Routes.infoShelterPage: (context) => const infoShelterPageState(),
+        Routes.payPage: (context) => const payPageState (),
+        Routes.mapPage: (context) => const mapPageState(),
+      },
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: _MyAppStateState(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  final Map<String, Marker> _markers = {};
-  Future<void> _onMapCreated(GoogleMapController controller) async {
-    final googleOffices = await locations.getGoogleOffices();
-    setState(() {
-      _markers.clear();
-      for (final office in googleOffices.offices) {
-        final marker = Marker(
-          markerId: MarkerId(office.name),
-          position: LatLng(office.lat, office.lng),
-          infoWindow: InfoWindow(
-            title: office.name,
-            snippet: office.address,
-              onTap: () {
-                print("Clicked: ${office.name}");
-              }
-          ),
-        );
-        _markers[office.name] = marker;
-      }
-    });
-  }
+class _MyAppStateState extends StatefulWidget {
+   _MyAppStateState({Key? key}) : super(key: key);
+
+  @override
+  State<_MyAppStateState> createState() => _MyAppStateStateState();
+}
+
+class _MyAppStateStateState extends State<_MyAppStateState> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +51,9 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Animalyu'),
           backgroundColor: Colors.green[700],
         ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: const CameraPosition(
-            target: LatLng(0, 0),
-            zoom: 2,
-          ),
-          markers: _markers.values.toSet(),
-        ),
       ),
     );
   }
+
+
 }
