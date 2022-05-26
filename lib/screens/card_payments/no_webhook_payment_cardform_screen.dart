@@ -139,7 +139,7 @@ class _NoWebhookPaymentCardFormScreenState
           paymentIntentResult['requiresAction'] == true) {
         // 4. if payment requires action calling handleCardAction
         final paymentIntent = await Stripe.instance
-            .handleCardAction(paymentIntentResult['clientSecret']);
+            .handleNextAction(paymentIntentResult['clientSecret']);
 
         // todo handle error
         /*if (cardActionError) {

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_in_flutter/RegisterApp.dart';
 import 'package:google_maps_in_flutter/src/infoShelter_page.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:google_maps_in_flutter/src/map_page.dart';
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
 import 'package:google_maps_in_flutter/src/pay_page.dart';
+import 'package:google_maps_in_flutter/src/userProfile.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
 void main() => runApp(MyApp());
@@ -20,11 +22,13 @@ class MyApp extends StatelessWidget {
         Locale('en', ''), // English, no country code
         Locale('es', ''), // Spanish, no country code
       ],
-      initialRoute: Routes.mapPage,
+      initialRoute: Routes.registerApp,
       routes: {
         Routes.infoShelterPage: (context) => const infoShelterPageState(),
         Routes.payPage: (context) => const payPageState (),
         Routes.mapPage: (context) => const mapPageState(),
+        Routes.userProfile: (context) => const ProfileDesign(),
+        Routes.registerApp: (context) => const RegisterApp(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),

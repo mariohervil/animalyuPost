@@ -33,17 +33,19 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  flutter_easyloading: ^3.0.3
   cupertino_icons: ^1.0.2
   google_maps_flutter: ^2.1.5
   http: ^0.13.4
   json_serializable: ^6.2.0
   url_launcher: ^6.1.2
-  flutter_stripe: ^3.0.0
+  flutter_stripe: ^3.0.1
   flutter_stripe_web: ^1.0.0
   stripe_checkout: ^1.0.0
     # pay: ^1.0.8
-  font_awesome_flutter: ^9.2.0
+  font_awesome_flutter: ^10.1.0
   platform: ^3.0.0
+  geocoding: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -54,7 +56,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
   build_runner: ^2.1.10
 
 # For information on the generic Dart part of this file, see the

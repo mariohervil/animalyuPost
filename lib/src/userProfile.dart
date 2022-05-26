@@ -12,6 +12,8 @@ void main() {
 }
 
 class ProfileDesign extends StatefulWidget {
+  const ProfileDesign({Key? key}) : super(key: key);
+
   @override
   State<ProfileDesign> createState() => _ProfileDesignState();
 }

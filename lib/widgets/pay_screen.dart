@@ -1,7 +1,4 @@
-
 import 'package:flutter/material.dart';
-
-import '../util/page_directory.dart';
 
 class ExampleScaffold extends StatelessWidget {
   final List<Widget> children;
@@ -19,6 +16,7 @@ class ExampleScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -31,23 +29,14 @@ class ExampleScaffold extends StatelessWidget {
             ),
             SizedBox(height: 4),
             Padding(
+              padding: EdgeInsetsGeometry.infinity,
               child: Row(
                 children: [
-              Padding(
-              padding: const EdgeInsets.only(top: 14, left: 36, right: 36),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context, Routes.mapPage, (Route<dynamic> route) => false,
-                  );
-                  },
-                child: Text("Proximamente"),
+                  for (final tag in tags) Chip(label: Text(tag)),
+                ],
               ),
-              )
-                ]
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 1),
-            ),
+             ),
+
           ],
         ),
       ),

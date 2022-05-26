@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:google_maps_in_flutter/src/.env.dart';
 import 'package:google_maps_in_flutter/widgets/pay_screen.dart';
+import '../../.env.example.dart';
 import '../../config.dart';
 import 'platforms/stripe_checkout.dart'
     if (dart.library.js) 'platforms/stripe_checkout_web.dart';
