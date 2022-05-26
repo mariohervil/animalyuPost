@@ -45,4 +45,5 @@ class AppColors {
   static const Color sendPageBackground = Color(0xffBCB2FE);
   static const Color activeColor = Color(0xff241050);
   static const Color greyInvoice = Color(0xffc4c4c4);
+  static const Color logo = Color(0xfff1f1f1);
 }
