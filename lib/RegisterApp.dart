@@ -1,18 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_maps_in_flutter/util/page_directory.dart';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
 
 import 'main.dart';
 
-class RegisterApp extends StatefulWidget {
-  const RegisterApp({Key? key}) : super(key: key);
+class RegisterUser extends StatefulWidget {
+  const RegisterUser({Key? key}) : super(key: key);
 
   @override
-  _RegisterAppState createState() => _RegisterAppState();
+  _RegisterUserState createState() => _RegisterUserState();
 }
 
-class _RegisterAppState extends State<RegisterApp> {
+class _RegisterUserState extends State<RegisterUser> {
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
   TextEditingController uNController = TextEditingController();
@@ -140,8 +141,10 @@ class _RegisterAppState extends State<RegisterApp> {
     if (response == "1") {
       //ScaffoldMessenger()
       _messengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text('Registered Successfully'),
+          content: Text('Registrado correctamente'),
           backgroundColor: Colors.green));
+      _MapPage();
+
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Registration failed'), backgroundColor: Colors.red));
@@ -165,7 +168,7 @@ class _RegisterAppState extends State<RegisterApp> {
         _messengerKey.currentState?.showSnackBar(const SnackBar(
             content: Text('Campos vacíos'), backgroundColor: Colors.red));
       } else if (username == "") {
-        throw Exception("Username Field is Empty");
+        throw Exception("Usuario vacío");
       } else {
         Map<String, String> loginBody = {
           'mode': 'register',
@@ -182,7 +185,13 @@ class _RegisterAppState extends State<RegisterApp> {
           backgroundColor: Colors.red));
     }
   }
+  Future<void> _MapPage() async {
+    Navigator.pushNamedAndRemoveUntil(
+        context, Routes.mapPage, (Route<dynamic> route) => false,
+        );
+  }
 }
+
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".

@@ -8,22 +8,22 @@ import 'package:google_maps_in_flutter/src/app_colors.dart';
 import 'dart:math' as math;
 
 void main() {
-  runApp(ProfileDesign());
+  runApp(UserProfileDesign());
 }
 
-class ProfileDesign extends StatefulWidget {
-  const ProfileDesign({Key? key}) : super(key: key);
+class UserProfileDesign extends StatefulWidget {
+  const UserProfileDesign({Key? key}) : super(key: key);
 
   @override
-  State<ProfileDesign> createState() => _ProfileDesignState();
+  State<UserProfileDesign> createState() => _UserProfileDesignState();
 }
 
-class _ProfileDesignState extends State<ProfileDesign> {
+class _UserProfileDesignState extends State<UserProfileDesign> {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Profile',
-      home: Profile(),
+      home: UserProfile(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -34,8 +34,8 @@ class _ProfileDesignState extends State<ProfileDesign> {
   }
 }
 
-class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
+class UserProfile extends StatelessWidget {
+  const UserProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +70,9 @@ class Profile extends StatelessWidget {
       ),
     );
   }
+
+
+
 }
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -346,7 +349,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     nombre = await arr[0];
     email = await arr[1];
     phone = await arr[2];
-    sleep(Duration(seconds: 1));
+    //sleep(Duration(seconds: 1));
     print(response);
   }
 

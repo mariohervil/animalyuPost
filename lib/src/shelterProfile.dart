@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_maps_in_flutter/src/page_arguments.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,20 +9,22 @@ import 'package:google_maps_in_flutter/src/app_colors.dart';
 import 'dart:math' as math;
 
 void main() {
-  runApp(ProfileDesign());
+  runApp(ShelterProfileDesign());
 }
 
-class ProfileDesign extends StatefulWidget {
+class ShelterProfileDesign extends StatefulWidget {
   @override
-  State<ProfileDesign> createState() => _ProfileDesignState();
+  State<ShelterProfileDesign> createState() => _ShelterProfileDesignState();
 }
 
-class _ProfileDesignState extends State<ProfileDesign> {
+class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
+
+
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Profile',
-      home: Profile(),
+      home: ShelterProfile(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -32,8 +35,8 @@ class _ProfileDesignState extends State<ProfileDesign> {
   }
 }
 
-class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
+class ShelterProfile extends StatelessWidget {
+  const ShelterProfile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,8 @@ class Profile extends StatelessWidget {
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
+  late String idArguments;
+  static late SuccessfulTransactionParameters transactionArguments;
 
   Future<ui.Image> loadImage() async {
     final imageBytes = await rootBundle.load('assets/texture.jpg');
@@ -91,8 +96,10 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    foto();
-    FillUser("1");
+    //foto();
+    idArguments = transactionArguments.id;
+
+    FillUser(idArguments);
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -101,8 +108,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         clipper: CClipper(),
         child: Container(
           decoration: BoxDecoration(
-              //color: Colors.black,
-              //shape: AppBarBorder(),
+            //color: Colors.black,
+            //shape: AppBarBorder(),
               image: DecorationImage(
                   image: new AssetImage("assets/animalyuTexture.jpg"),
                   opacity: 0.5,
@@ -122,7 +129,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.menu),
+                        icon: const Icon(Icons.arrow_back),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -133,8 +140,9 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                           fontSize: 16,
                         ),
                       ),
+
                       IconButton(
-                        icon: const Icon(Icons.notifications),
+                        icon: Icon(Icons.menu),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -161,14 +169,17 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                       clipper: CustomClipPath(),
                                       child: Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             image: DecorationImage(
                                               opacity: 0.1,
                                               fit: BoxFit.fill,
                                               image:
-                                                  AssetImage("assets/a.jpeg"),
+                                              AssetImage("assets/a.jpeg"),
                                             )),
                                         child: Column(
                                           children: [
@@ -177,16 +188,16 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                                   0, 0, 120, 0),
                                               child: CustomPaint(
                                                 foregroundPainter:
-                                                    LinePainter(),
+                                                LinePainter(),
                                               ),
                                             ),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              MainAxisAlignment.center,
                                               children: [
                                                 Padding(
                                                   padding:
-                                                      const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                                   child: Text(
                                                     "Nombre",
                                                     style: TextStyle(
@@ -199,54 +210,54 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 nombre,
                                                 style: TextStyle(
                                                     color:
-                                                        AppColors.marronOscuro),
+                                                    AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 "Correo",
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     color:
-                                                        AppColors.marronOscuro),
+                                                    AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 email,
                                                 style: TextStyle(
                                                     color:
-                                                        AppColors.marronOscuro),
+                                                    AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 "Teléfono",
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     color:
-                                                        AppColors.marronOscuro),
+                                                    AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(8.0),
                                               child: Text(
                                                 phone,
                                                 style: TextStyle(
                                                     color:
-                                                        AppColors.marronOscuro),
+                                                    AppColors.marronOscuro),
                                               ),
                                             ),
                                           ],
@@ -256,7 +267,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                   ],
                                 ),
                                 decoration:
-                                    BoxDecoration(color: Colors.transparent),
+                                BoxDecoration(color: Colors.transparent),
                               ),
                             ),
                           ),
@@ -278,7 +289,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                     ],
                                     shape: BoxShape.rectangle,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(40)),
+                                    BorderRadius.all(Radius.circular(40)),
                                     image: DecorationImage(
                                         fit: BoxFit.fill,
                                         image: NetworkImage(
@@ -304,7 +315,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                     primary: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(30.0),
+                                      BorderRadius.circular(30.0),
                                       side: BorderSide(color: Colors.white),
                                     ),
                                   ),
