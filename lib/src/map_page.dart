@@ -67,7 +67,7 @@ class _mapPageState extends State<mapPageState> {
               onTap: () {
                 Navigator.pushNamedAndRemoveUntil(
                     context,
-                    Routes.shelterPage,
+                    Routes.shelterProfile,
                         (Route<dynamic> route) => false,
                     arguments: SuccessfulTransactionParameters(
                         office.address, office.id, office.lat,office.lng,office.name, office.phone));

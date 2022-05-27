@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         Routes.userProfile: (context) => ProfileDesign(),
         Routes.registerApp: (context) => const RegisterUser(),
         Routes.logApp: (context) => const LogInApp(),
-        Routes.shelterPage: (context) => const ShelterProfile(),
+        Routes.shelterProfile: (context) =>  const ShelterProfileDesign(),
         Routes.editProfile: (context) => EditProfile(),
         Routes.registerShelter: (context) => const RegisterShelter(),
       },
