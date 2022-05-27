@@ -20,51 +20,39 @@ class ShelterProfileDesign extends StatefulWidget {
 class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
 
 
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Profile',
-      home: ShelterProfile(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
-
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([]);
   }
-}
-
-class ShelterProfile extends StatelessWidget {
-  const ShelterProfile({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(),
-      body: Container(
-        width: 600,
-        height: 400,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white,
-                blurRadius: 0,
-                offset: Offset(0, 0),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: CustomAppBar(),
+        body: Container(
+          width: 600,
+          height: 400,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white,
+                  blurRadius: 0,
+                  offset: Offset(0, 0),
+                ),
+              ]),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(27, 0, 0, 0),
+            child: CustomPaint(
+              foregroundPainter: LineBottomPainter(),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 280, 27, 0),
+                  )
+                ],
               ),
-            ]),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(27, 0, 0, 0),
-          child: CustomPaint(
-            foregroundPainter: LineBottomPainter(),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 280, 27, 0),
-                )
-              ],
             ),
           ),
         ),
