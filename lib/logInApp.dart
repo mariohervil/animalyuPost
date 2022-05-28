@@ -6,9 +6,12 @@ import 'package:http/http.dart' as http;
 
 import 'RegisterApp.dart';
 
-void main(){runApp(const MaterialApp(
-  title: 'Your title',
-  home: LogInApp(),));}
+void main() {
+  runApp(const MaterialApp(
+    title: 'Your title',
+    home: LogInApp(),
+  ));
+}
 
 class LogInApp extends StatefulWidget {
   const LogInApp({Key? key}) : super(key: key);
@@ -18,7 +21,6 @@ class LogInApp extends StatefulWidget {
 }
 
 class _LogInAppState extends State<LogInApp> {
-
   static String username = "";
   static String password = "";
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -72,20 +74,23 @@ class _LogInAppState extends State<LogInApp> {
           SnackBar(content: Text(e2), backgroundColor: Colors.red));
     }
   }
+
   Future<void> _MapPage() async {
     Navigator.pushNamedAndRemoveUntil(
-      context, Routes.mapPage, (Route<dynamic> route) => false,
+      context,
+      Routes.mapPage,
+      (Route<dynamic> route) => false,
     );
   }
+
   void checkLogin(String response) {
     //print(response);
     if (response == "1") {
       //ScaffoldMessenger()
       _messengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text('Inicio de sesión correcto'), backgroundColor: Colors.green));
+          content: Text('Inicio de sesión correcto'),
+          backgroundColor: Colors.green));
       _MapPage();
-
-
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Nombre de usuario o contraseña incorrectos'),
@@ -95,119 +100,107 @@ class _LogInAppState extends State<LogInApp> {
 
   @override
   Widget build(BuildContext context) {
-   // final Color color = HexColor.fromHex('#D3D3D3');
+    // final Color color = HexColor.fromHex('#D3D3D3');
 
     return MaterialApp(
-      theme: ThemeData(
-          snackBarTheme: const SnackBarThemeData(
-              contentTextStyle:
-              TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
-      scaffoldMessengerKey: _messengerKey,
-      debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            snackBarTheme: const SnackBarThemeData(
+                contentTextStyle:
+                TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
+        scaffoldMessengerKey: _messengerKey,
+        debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Center(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(60, 50, 0, 0),
-                  // child: Text("Log In Screen"),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 50, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
-                    controller: uNController,
-                    decoration: InputDecoration(
-                        labelText: 'Nombre de usuario',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: Colors.white),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
+          body: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 10.0,
+                  spreadRadius: 1.0,
+                  offset: Offset(
+                    4.0,
+                    4.0,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 15, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
-                    controller: uPController,
-                    decoration: InputDecoration(
-                        labelText: 'Contraseña',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: Colors.white),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 18)),
-                  onPressed: postData,
-                  child: const Text("Iniciar sesión"),
-                ),
-
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                   children: [
-                     ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            //padding: const EdgeInsets.fromLTRB(250, 0, 0, 0),
-                              elevation: 0.00,
-                              primary: Colors.transparent,
-                              textStyle: const TextStyle(
-                                  fontSize: 20, fontFamily: "Rubik-Light"),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero,
-                                  side: BorderSide(color: Colors.transparent))),
-                          child: const Text(
-                            'Regístrate aquí',
-                            style: TextStyle(
-                                color: Colors.lightBlue,
-                                decoration: TextDecoration.underline),
-                          ),
-                          onPressed: () {
-                            // _navigateToNextScreen(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const RegisterUser()),);
-                          }),
-
-               ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          //padding: const EdgeInsets.fromLTRB(250, 0, 0, 0),
-                            elevation: 0.00,
-                            primary: Colors.transparent,
-                            textStyle: const TextStyle(
-                                fontSize: 20, fontFamily: "Rubik-Light"),
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero,
-                                side: BorderSide(color: Colors.transparent))),
-                        child: const Text(
-                          'Eres una protectora?',
-                          style: TextStyle(
-                              color: Colors.lightBlue,
-                              decoration: TextDecoration.underline),
-                        ),
-                        onPressed: () {
-                          // _navigateToNextScreen(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const RegisterShelter()),);
-                        }),
-                   ],
-                 ),
+                )
               ],
-            )),
-      ),
+            ),
+            child: Column(children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                child: Text(
+                  "Log In",
+                  style: TextStyle(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              TextFormField(
+                controller: uNController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.alternate_email),
+                  hintText: "Email",
+                ),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              TextFormField(
+                controller: uPController,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.lock_outline),
+                  hintText: "Password",
+                ),
+                obscureText: true,
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              RaisedButton(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 100),
+                  child: Text(
+                    "Log In",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  postData();
+                },
+              ),
+              FlatButton(
+                child: Text("Don't have an account? Sign up here"),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RegisterUser()),
+                  );
+                },
+              ),
+              FlatButton(
+                child: Text("Centro de acogida? Sign up here"),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterShelter()),
+                  );
+                },
+              ),
+            ]),
+          )
+
+      )
+
     );
   }
 

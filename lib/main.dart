@@ -13,7 +13,11 @@ import 'package:google_maps_in_flutter/src/shelterProfile.dart';
 import 'package:google_maps_in_flutter/src/userProfile.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

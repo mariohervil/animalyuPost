@@ -4,8 +4,6 @@ import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
-
-
 class mapPageState extends StatefulWidget {
   const mapPageState({Key? key}) : super(key: key);
 
