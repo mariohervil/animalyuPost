@@ -48,6 +48,7 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
   Widget build(BuildContext context) {
     transactionArguments = ModalRoute.of(context)!.settings.arguments
     as SuccessfulTransactionParameters;
+    final size = MediaQuery.of(context).size;
     String name = transactionArguments.name;
     String email = "ko.za";
     String phone = transactionArguments.phone;
@@ -310,8 +311,8 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
           ),
         ),
         body: Container(
-          width: 600,
-          height: 500,
+          width: size.width,
+          height: size.height,
           decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),

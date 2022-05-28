@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_in_flutter/src/registerShelter.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'RegisterApp.dart';
 
@@ -21,6 +22,7 @@ class LogInApp extends StatefulWidget {
 }
 
 class _LogInAppState extends State<LogInApp> {
+  late bool _passwordVisible  = false;
   static String username = "";
   static String password = "";
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -110,10 +112,20 @@ class _LogInAppState extends State<LogInApp> {
         scaffoldMessengerKey: _messengerKey,
         debugShowCheckedModeBanner: false,
       home: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: 300,
+          backgroundColor:Colors.grey,
+          title: SvgPicture.asset(
+          'assets/animalyuLogo.svg',
+          width: 300,
+          height: 300,
+        ),
+          centerTitle: true,
+        ),
           body: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.grey,
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey,
@@ -130,7 +142,7 @@ class _LogInAppState extends State<LogInApp> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
                 child: Text(
-                  "Log In",
+                  "",
                   style: TextStyle(
                     color: Theme.of(context).secondaryHeaderColor,
                     fontSize: 25.0,
@@ -149,16 +161,28 @@ class _LogInAppState extends State<LogInApp> {
                 height: 20.0,
               ),
               TextFormField(
+                obscureText: !_passwordVisible,
                 controller: uPController,
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.lock_outline),
                   hintText: "Password",
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true,
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 8.0),),
               RaisedButton(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 100),
@@ -175,6 +199,8 @@ class _LogInAppState extends State<LogInApp> {
                   postData();
                 },
               ),
+        Padding(
+            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),),
               FlatButton(
                 child: Text("Don't have an account? Sign up here"),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -203,7 +229,6 @@ class _LogInAppState extends State<LogInApp> {
 
     );
   }
-
   void _navigateToNextScreen(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const RegisterUser()));
