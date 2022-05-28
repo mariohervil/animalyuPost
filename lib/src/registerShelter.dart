@@ -187,7 +187,6 @@ class _RegisterShelterState extends State<RegisterShelter> {
     final response = await http.post(Uri.parse(url), body: body);
     print(response.body);
     checkLogin(response.body);
-
     return response;
   }
 
