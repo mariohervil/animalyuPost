@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-import 'Animal.dart';
+import 'animal.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -38,11 +39,18 @@ class MyApp extends StatelessWidget {
     };
     final response = await http.post(Uri.parse(url), body: body);
 
-    String a = '{"animal": [${response.body}]}';
-    print(a);
-    Map<String, dynamic> results =  json.decode(a);
-    Animal animal = Animal.fromJson(results);
-    print(animal.toString());
+    String a = response.body;
+    final animals = ("{animals:${response.body.replaceAll("][", ",")}}");
+    // print(animals);
+
+    final List parsedList = json.decode(animals);
+
+    List<Animals> list = parsedList.map((val) => Animals.fromJson(val)).toList();
+    list.removeAt(0);
+    print(animals);
+    //Map<String, dynamic> results = json.decode(animals);
+    //Animal animal = Animal.fromJson(results);
+
     return response;
   }
 
