@@ -40,23 +40,24 @@ class _AnimalScrollState extends State<AnimalScroll> {
     final List parsedList = json.decode(animals);
     List<Animal> list = parsedList.map((val) => Animal.fromJson(val)).toList();
     Animals animal = Animals(animals: list);
+    print(animals);
     return animal;
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,
         home: FutureBuilder(
-      builder: (context, AsyncSnapshot<Animals> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else {
-          return _AnimalsList(snapshot.data!.animals);
-        }
-      },
-      future: getAnimals(),
-    ));
+          builder: (context, AsyncSnapshot<Animals> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              return _AnimalsList(snapshot.data!.animals);
+            }
+          },
+          future: getAnimals(),
+        ));
   }
 }
 
@@ -77,9 +78,7 @@ class _AnimalsList extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                  color: Colors.white54,
-                  blurRadius: 0,
-                  offset: Offset(0, 0))
+                  color: Colors.white54, blurRadius: 0, offset: Offset(0, 0))
             ]),
         //color: Colors.white,
         child: ListView.builder(
@@ -119,7 +118,7 @@ class _AnimalsList extends StatelessWidget {
                   Text(
                       "- ${animals[i].animalType}\t- ${animals[i].raceName}\n- ${animals[i].birthdate}\t- ${animals[i].weight}kg",
                       style: TextStyle(
-                        //fontFamily: "Rubik-Light",
+                          //fontFamily: "Rubik-Light",
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 16))
