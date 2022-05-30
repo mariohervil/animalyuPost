@@ -10,7 +10,6 @@ void main() => runApp(AnimalScroll());
 class AnimalScroll extends StatefulWidget {
   const AnimalScroll({Key? key}) : super(key: key);
 
-
   @override
   State<AnimalScroll> createState() => _AnimalScrollState();
 }
@@ -46,7 +45,9 @@ class _AnimalScrollState extends State<AnimalScroll> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: FutureBuilder(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+        home: FutureBuilder(
       builder: (context, AsyncSnapshot<Animals> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -55,52 +56,78 @@ class _AnimalScrollState extends State<AnimalScroll> {
         }
       },
       future: getAnimals(),
-    )
-    );
+    ));
   }
 }
 
 class _AnimalsList extends StatelessWidget {
   final List<Animal> animals;
+
   _AnimalsList(this.animals);
+
   @override
   Widget build(BuildContext context) {
     animals.removeAt(0);
     return Container(
-        color: Colors.white,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/animalyuTexture.jpg"),
+              fit: BoxFit.cover,
+              opacity: 0.9,
+            ),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.white54,
+                  blurRadius: 0,
+                  offset: Offset(0, 0))
+            ]),
+        //color: Colors.white,
         child: ListView.builder(
           itemCount: animals.length,
           itemBuilder: ((context, i) {
-            return Card(color: Colors.blueAccent,
-                shape:RoundedRectangleBorder(
-                borderRadius:BorderRadius.circular(24)),
-              clipBehavior:Clip.antiAlias, child:
-            Column(
-              children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Ink.image(
-                      image: NetworkImage(
-                          'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1143&q=80'
+            return Card(
+              borderOnForeground: true,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24)),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Ink.image(
+                        image: NetworkImage(
+                            'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1143&q=80'),
+                        child: InkWell(
+                          onTap: () {},
+                        ),
+                        height: 240,
+                        fit: BoxFit.cover,
                       ),
-                      child: InkWell(
-                        onTap: () {},
-                      ),
-                      height: 240,
-                      fit: BoxFit.cover,
-                    ),
-
-                    Positioned(bottom:16, right:16, left:16, child: Text(animals[i].name, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24))),
-                  ],
-                ),
-                Text(animals[i].animalType,  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24))
-              ],
-            ),
+                      Positioned(
+                          bottom: 16,
+                          right: 16,
+                          left: 16,
+                          child: Text(animals[i].name,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24))),
+                    ],
+                  ),
+                  Text(
+                      "- ${animals[i].animalType}\t- ${animals[i].raceName}\n- ${animals[i].birthdate}\t- ${animals[i].weight}kg",
+                      style: TextStyle(
+                        //fontFamily: "Rubik-Light",
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16))
+                ],
+              ),
             );
           }),
-        )
-    );
+        ));
   }
 }
 
