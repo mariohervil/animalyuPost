@@ -1,9 +1,11 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'animal.dart';
+import 'package:kt_dart/kt.dart';
 
 void main() => runApp(AnimalScroll());
 
@@ -35,11 +37,19 @@ class _AnimalScrollState extends State<AnimalScroll> {
   Future<Animals> getAnimals() async {
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: body);
-    final animals = ("${response.body.replaceAll("][", ",")}");
+    final animals = (response.body.replaceAll("][", ","));
     //print(animals);
     final List parsedList = json.decode(animals);
+    //var lista = mutableListFrom(parsedList["animals"]);
+
     List<Animal> list = parsedList.map((val) => Animal.fromJson(val)).toList();
-    Animals animal = Animals(animals: list);
+    Map<String, Animal> mp = {};
+    for (var item in list) {
+      mp[item.name] = item;
+    }
+    var filteredList = mp.values.toList();
+    Animals animal = Animals(animals: filteredList);
+    //var distinct = list.distinctBy((it) => it["name"]);
     print(animals);
     return animal;
   }
@@ -68,7 +78,6 @@ class _AnimalsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    animals.removeAt(0);
     return Container(
         decoration: BoxDecoration(
             image: DecorationImage(
@@ -116,9 +125,11 @@ class _AnimalsList extends StatelessWidget {
                     ],
                   ),
                   Text(
-                      "- ${animals[i].animalType}\t- ${animals[i].raceName}\n- ${animals[i].birthdate}\t- ${animals[i].weight}kg",
+                      "- ${animals[i].animalType}\t- ${animals[i]
+                          .raceName}\n- ${animals[i].birthdate}\t- ${animals[i]
+                          .weight}kg",
                       style: TextStyle(
-                          //fontFamily: "Rubik-Light",
+                        //fontFamily: "Rubik-Light",
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 16))
@@ -138,6 +149,17 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
+
+extension Unique<E, Id> on List<E> {
+  List<E> unique([Id Function(E element)? id, bool inplace = true]) {
+    final ids = Set();
+    var list = inplace ? this : List<E>.from(this);
+    list.retainWhere((x) => ids.add(id != null ? id(x) : x as Id));
+    return list;
+  }
+}
+
+
 /*Future<Animal> getData() async {
   var animals= await makePostRequest(url); // not sure what your events data/method is
   for(Animal animal in animals){
