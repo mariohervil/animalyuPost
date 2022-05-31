@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_in_flutter/src/page_arguments.dart';
 import 'package:google_maps_in_flutter/src/registerShelter.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +25,15 @@ class LogInApp extends StatefulWidget {
 }
 
 class _LogInAppState extends State<LogInApp> {
-  late bool _passwordVisible  = false;
+  late String address;
+  late String id;
+  late double lat;
+  late double lng;
+  late String name;
+  late String phone;
+  late SuccessfulTransactionParameters transactionArguments;
+  FocusNode myFocusNode = new FocusNode();
+  late bool _passwordVisible = false;
   static String username = "";
   static String password = "";
   final _messengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -48,7 +59,10 @@ class _LogInAppState extends State<LogInApp> {
       String url, Map<String, String> body) async {
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: body);
-    checkLogin(response.body);
+    var array = response.body.split(",");
+    array[0];
+    print("ssaaaaaaaaaaaaaaass ${array}");
+    checkLogin(array[0]);
 
     return response;
   }
@@ -77,6 +91,152 @@ class _LogInAppState extends State<LogInApp> {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    // final Color color = HexColor.fromHex('#D3D3D3');
+
+    return MaterialApp(
+        theme: ThemeData(
+            snackBarTheme: const SnackBarThemeData(
+                contentTextStyle:
+                    TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
+        scaffoldMessengerKey: _messengerKey,
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+            resizeToAvoidBottomInset: false,
+            //hacer que el botón no desaparezca con el teclado
+            appBar: AppBar(
+              elevation: 0,
+              toolbarHeight: 300,
+              backgroundColor: Colors.brown,
+              title: SvgPicture.asset(
+                'assets/animalyuLogo.svg',
+                width: 300,
+                height: 300,
+              ),
+              centerTitle: true,
+            ),
+            body: Container(
+              decoration: const BoxDecoration(
+                color: Colors.brown,
+              ),
+              child: Column(children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0, horizontal: 8.0),
+                  child: Text(
+                    "",
+                    style: TextStyle(
+                      color: Theme.of(context).secondaryHeaderColor,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextFormField(
+                  focusNode: myFocusNode,
+                  controller: uNController,
+                  decoration: const InputDecoration(
+                    prefixIcon:
+                        Icon(Icons.alternate_email, color: Colors.black),
+                    hintText: "Email",
+                    //color cuando se selecciona
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                TextFormField(
+                  obscureText: !_passwordVisible,
+                  controller: uPController,
+                  decoration: InputDecoration(
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black54),
+                    ),
+                    prefixIcon:
+                        const Icon(Icons.lock_outline, color: Colors.black),
+                    hintText: "Password",
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    postData();
+                  },
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                    child: Container(
+                      height: 56,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white,
+                      ),
+                      child: const Text(
+                        "log in",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
+                ),
+                TextButton(
+                  child: const Text("Don't have an account? Sign up here"),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterUser()),
+                    );
+                  },
+                ),
+                TextButton(
+                  child: const Text("Centro de acogida? Sign up here"),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterShelter()),
+                    );
+                  },
+                ),
+              ]),
+            )));
+  }
+
   Future<void> _MapPage() async {
     Navigator.pushNamedAndRemoveUntil(
       context,
@@ -84,6 +244,12 @@ class _LogInAppState extends State<LogInApp> {
       (Route<dynamic> route) => false,
     );
   }
+
+  Future<void> _toShelterProfile() async {
+
+    }
+
+
 
   void checkLogin(String response) {
     //print(response);
@@ -93,6 +259,13 @@ class _LogInAppState extends State<LogInApp> {
           content: Text('Inicio de sesión correcto'),
           backgroundColor: Colors.green));
       _MapPage();
+    }
+    if (response == "2") {
+      //ScaffoldMessenger()
+      _messengerKey.currentState?.showSnackBar(const SnackBar(
+          content: Text('Inicio de sesión correcto'),
+          backgroundColor: Colors.green));
+      _toShelterProfile();
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Nombre de usuario o contraseña incorrectos'),
@@ -100,135 +273,7 @@ class _LogInAppState extends State<LogInApp> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // final Color color = HexColor.fromHex('#D3D3D3');
 
-    return MaterialApp(
-        theme: ThemeData(
-            snackBarTheme: const SnackBarThemeData(
-                contentTextStyle:
-                TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
-        scaffoldMessengerKey: _messengerKey,
-        debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: 300,
-          backgroundColor:Colors.grey,
-          title: SvgPicture.asset(
-          'assets/animalyuLogo.svg',
-          width: 300,
-          height: 300,
-        ),
-          centerTitle: true,
-        ),
-          body: Container(
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  blurRadius: 10.0,
-                  spreadRadius: 1.0,
-                  offset: Offset(
-                    4.0,
-                    4.0,
-                  ),
-                )
-              ],
-            ),
-            child: Column(children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
-                child: Text(
-                  "",
-                  style: TextStyle(
-                    color: Theme.of(context).secondaryHeaderColor,
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              TextFormField(
-                controller: uNController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.alternate_email),
-                  hintText: "Email",
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              TextFormField(
-                obscureText: !_passwordVisible,
-                controller: uPController,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.lock_outline),
-                  hintText: "Password",
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _passwordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Colors.black,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 8.0),),
-              RaisedButton(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 100),
-                  child: Text(
-                    "Log In",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  postData();
-                },
-              ),
-        Padding(
-            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),),
-              FlatButton(
-                child: Text("Don't have an account? Sign up here"),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const RegisterUser()),
-                  );
-                },
-              ),
-              FlatButton(
-                child: Text("Centro de acogida? Sign up here"),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisterShelter()),
-                  );
-                },
-              ),
-            ]),
-          )
-
-      )
-
-    );
-  }
   void _navigateToNextScreen(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => const RegisterUser()));

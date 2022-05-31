@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
@@ -27,15 +28,27 @@ class _RegisterShelterState extends State<RegisterShelter> {
   @override
   Widget build(BuildContext context) {
     final Color color = HexColor.fromHex('#D3D3D3');
-
     return MaterialApp(
       theme: ThemeData(
           snackBarTheme: const SnackBarThemeData(
               contentTextStyle:
-              TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
+              TextStyle(fontFamily: "Rubik-Light", fontSize: 21))),
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: 200,
+          backgroundColor:Colors.white,
+          title: SvgPicture.asset(
+            'assets/animalyuLogo.svg',
+            width: 300,
+            height: 300,
+          ),
+          centerTitle: true,
+        ),
         body: Center(
             child: Column(
               children: [
@@ -45,125 +58,69 @@ class _RegisterShelterState extends State<RegisterShelter> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: uNController,
                     decoration: InputDecoration(
                         labelText: 'Nombre de usuario',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
+                      ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: uPController,
                     decoration: InputDecoration(
                         labelText: 'Contraseña',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: uEController,
                     decoration: InputDecoration(
                         labelText: 'Correo',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
+                      ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: uPhController,
                     decoration: InputDecoration(
                         labelText: 'Teléfono',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
                   ),
                 ),Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: shelterName,
                     decoration: InputDecoration(
                         labelText: 'Nombre',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
                   ),
                 ),Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: shelterCIF,
                     decoration: InputDecoration(
                         labelText: 'CIF',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
+                       ),
                   ),
                 ),Padding(
                   padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-                  child: TextField(
-                    style: const TextStyle(fontSize: 20),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 16),
                     controller: shelterAddress,
                     decoration: InputDecoration(
                         labelText: 'Dirección',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 3, color: color),
-                          borderRadius: BorderRadius.circular(15),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        )),
                   ),
                 ),
                 Padding(

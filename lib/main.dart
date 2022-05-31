@@ -13,6 +13,8 @@ import 'package:google_maps_in_flutter/src/shelterProfile.dart';
 import 'package:google_maps_in_flutter/src/userProfile.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
+import 'devProfile.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -35,12 +37,13 @@ class MyApp extends StatelessWidget {
         Routes.infoShelterPage: (context) => const infoShelterPageState(),
         Routes.payPage: (context) => const payPageState (),
         Routes.mapPage: (context) => const mapPageState(),
-        Routes.userProfile: (context) => ProfileDesign(),
         Routes.registerApp: (context) => const RegisterUser(),
         Routes.logApp: (context) => const LogInApp(),
         Routes.shelterProfile: (context) =>  const ShelterProfileDesign(),
         Routes.editProfile: (context) => EditProfile(),
         Routes.registerShelter: (context) => const RegisterShelter(),
+        Routes.devProfile: (context) => const DevProfileDesign(),
+        Routes.userProfile: (context) => const UserProfileDesign(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),

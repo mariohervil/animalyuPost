@@ -1,4 +1,4 @@
-package com.example.google_maps_in_flutter
+package com.example.animalyuPost
 
 import io.flutter.embedding.android.FlutterActivity
 

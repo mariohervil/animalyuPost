@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
@@ -24,15 +25,27 @@ class _RegisterUserState extends State<RegisterUser> {
   @override
   Widget build(BuildContext context) {
     final Color color = HexColor.fromHex('#D3D3D3');
-
     return MaterialApp(
       theme: ThemeData(
           snackBarTheme: const SnackBarThemeData(
               contentTextStyle:
-                  TextStyle(fontFamily: "Rubik-Light", fontSize: 20))),
+                  TextStyle(fontFamily: "Rubik-Light", fontSize: 21))),
       scaffoldMessengerKey: _messengerKey,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: 200,
+          backgroundColor:Colors.white,
+          title: SvgPicture.asset(
+            'assets/animalyuLogo.svg',
+            width: 300,
+            height: 300,
+          ),
+          centerTitle: true,
+        ),
         body: Center(
             child: Column(
           children: [
@@ -43,73 +56,41 @@ class _RegisterUserState extends State<RegisterUser> {
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: TextField(
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 16),
                 controller: uNController,
                 decoration: InputDecoration(
                     labelText: 'Username',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 3, color: color),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                      borderRadius: BorderRadius.circular(15),
-                    )),
+                   ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
               child: TextField(
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 16),
                 controller: uPController,
                 decoration: InputDecoration(
                     labelText: 'Password',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 3, color: color),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                      borderRadius: BorderRadius.circular(15),
-                    )),
+                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
               child: TextField(
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 16),
                 controller: uEController,
                 decoration: InputDecoration(
                     labelText: 'Email',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 3, color: color),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                      borderRadius: BorderRadius.circular(15),
-                    )),
+                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
               child: TextField(
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 16),
                 controller: uPhController,
                 decoration: InputDecoration(
                     labelText: 'Phone',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width: 3, color: color),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(width: 3, color: Colors.blue),
-                      borderRadius: BorderRadius.circular(15),
-                    )),
+               ),
               ),
             ),
             Padding(

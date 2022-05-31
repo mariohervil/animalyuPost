@@ -1,6 +1,7 @@
 
 class Routes{
   static const String shelterProfile ='/shelterProfile';
+  static const String devProfile ='/devProfile';
   static const String infoShelterPage ='/infoShelter_page';
   static const String mapPage ='/map_page';
   static const String payPage ='/pay_page';
