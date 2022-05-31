@@ -94,7 +94,7 @@ class _mapPageState extends State<mapPageState> {
         decoration: const BoxDecoration(
             image: const DecorationImage(
                 fit: BoxFit.fill,
-                image:  AssetImage('assets/animalyuLogo.jpg')
+                image:  AssetImage('assets/animalyuLogo.png')
             )),
         child: Stack(children: <Widget>[
           const Positioned(
