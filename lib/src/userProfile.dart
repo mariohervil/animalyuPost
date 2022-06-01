@@ -62,10 +62,17 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
               builder: (context, AsyncSnapshot<User> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
-                      color: Colors.white,
+                      decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/animalyuTexture.jpg",), fit: BoxFit.cover,opacity: 0.9,
+                      ),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.white54, blurRadius: 0, offset: Offset(0, 0))
+                          ]),
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       child: Stack(
+
+
                         children: [
                           Center(child: CircularProgressIndicator()),
                            Positioned(bottom: 500.h, left: 150.w, child: Text("Cargando...", style: TextStyle(color: Colors.black, fontSize: 20.sp, decoration: TextDecoration.none),))
