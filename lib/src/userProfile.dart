@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -27,7 +26,6 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
       'mode': 'selectUser',
       'user_id': id,
     };
-
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: loginBody);
 
@@ -35,7 +33,10 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
     //sleep(Duration(seconds: 1));
     // print(response);
 
-    User user = User(username: arr.elementAt(0), email: arr.elementAt(1),  phone:arr.elementAt(2));
+    User user = User(
+        username: arr.elementAt(0),
+        email: arr.elementAt(1),
+        phone: arr.elementAt(2));
     //User user = User(email: email, phone: phone)
 
     return user;
@@ -69,7 +70,7 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
 
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
 }
 
@@ -80,11 +81,12 @@ class UserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: CustomAppBar(user),
       body: Container(
-        width: 600,
-        height: 400,
+        width: size.width,
+        height: size.height,
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
@@ -115,7 +117,9 @@ class UserProfile extends StatelessWidget {
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   User user;
+
   CustomAppBar(this.user);
+
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
 
   Future<ui.Image> loadImage() async {

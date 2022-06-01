@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_maps_in_flutter/src/shelter.dart';
 import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +25,7 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
   late TransactionID transactionArguments;
 
-  Future<User> FillUser(String id) async {
+  Future<User> fillUser(String id) async {
     Map<String, String> loginBody = {
       'mode': 'selectUser',
       'user_id': id,
@@ -45,6 +46,32 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
 
     return user;
   }
+  Future<Shelter> fillShelter(String id) async {
+    Map<String, String> select = {
+      'mode': 'selectShelterbyID',
+      'user_id': id,
+    };
+
+    HttpOverrides.global = MyHttpOverrides();
+    final response = await http.post(Uri.parse(url), body: select);
+
+    var arr = response.body.split(", ");
+    //sleep(Duration(seconds: 1));
+    // print(response);
+
+    Shelter shelter = Shelter(
+        name: arr.elementAt(0),
+        email: arr.elementAt(1),
+        phone: arr.elementAt(2),
+    address: arr.elementAt(3));
+    //User user = User(email: email, phone: phone)
+
+    return shelter;
+  }
+
+
+
+
 
   Future<String> makePostRequest(String url, Map<String, String> body) async {
     HttpOverrides.global = MyHttpOverrides();
@@ -61,14 +88,14 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
     String id = transactionArguments.id;
     return MaterialApp(
       home: FutureBuilder(
-        builder: (context, AsyncSnapshot<User> snapshot) {
+        builder: (context, AsyncSnapshot<Shelter> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else {
-            return ShelterProfile(snapshot.data as User);
+            return ShelterProfile(snapshot.data as Shelter);
           }
         },
-        future: FillUser(id),
+        future: fillShelter(id),
       ),
       title: 'Profile',
       // home: UserProfile(),
@@ -83,14 +110,14 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
 }
 
 class ShelterProfile extends StatelessWidget {
-  ShelterProfile(this.user);
+  ShelterProfile(this.shelter);
 
-  User user;
+  Shelter shelter;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(user),
+      appBar: CustomAppBar(shelter),
       body: Container(
         width: 600,
         height: 400,
@@ -123,9 +150,9 @@ class ShelterProfile extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
-  User user;
+  Shelter shelter;
 
-  CustomAppBar(this.user);
+  CustomAppBar(this.shelter);
 
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
 
@@ -178,7 +205,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.menu),
+                        icon: Icon(Icons.arrow_back),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -190,7 +217,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.notifications),
+                        icon: const Icon(Icons.menu),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -257,7 +284,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Text(
-                                                user.username,
+                                                shelter.name,
                                                 style: TextStyle(
                                                     color:
                                                         AppColors.marronOscuro),
@@ -278,7 +305,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Text(
-                                                user.email,
+                                                shelter.email,
                                                 style: TextStyle(
                                                     color:
                                                         AppColors.marronOscuro),
@@ -299,7 +326,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Text(
-                                                user.phone,
+                                                shelter.phone,
                                                 style: TextStyle(
                                                     color:
                                                         AppColors.marronOscuro),

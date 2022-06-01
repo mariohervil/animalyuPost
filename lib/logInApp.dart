@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -61,7 +62,7 @@ class _LogInAppState extends State<LogInApp> {
     final response = await http.post(Uri.parse(url), body: body);
     var array = response.body.split(",");
     array[0];
-    print("ssaaaaaaaaaaaaaaass ${array}");
+    print("$array");
     checkLogin(array[0]);
 
     return response;
@@ -111,8 +112,8 @@ class _LogInAppState extends State<LogInApp> {
               backgroundColor: Colors.brown,
               title: SvgPicture.asset(
                 'assets/animalyuLogo.svg',
-                width: 300,
-                height: 300,
+                width: 300.w,
+                height: 300.h,
               ),
               centerTitle: true,
             ),
@@ -128,7 +129,7 @@ class _LogInAppState extends State<LogInApp> {
                     "",
                     style: TextStyle(
                       color: Theme.of(context).secondaryHeaderColor,
-                      fontSize: 25.0,
+                      fontSize: 25.0.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -149,8 +150,8 @@ class _LogInAppState extends State<LogInApp> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20.0,
+                SizedBox(
+                  height: 20.0.h,
                 ),
                 TextFormField(
                   obscureText: !_passwordVisible,
@@ -192,16 +193,16 @@ class _LogInAppState extends State<LogInApp> {
                     padding:
                         const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                     child: Container(
-                      height: 56,
+                      height: 56.h,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: Colors.white,
                       ),
-                      child: const Text(
+                      child: Text(
                         "log in",
                         style: TextStyle(
-                          fontSize: 18.0,
+                          fontSize: 18.0.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
                         ),
