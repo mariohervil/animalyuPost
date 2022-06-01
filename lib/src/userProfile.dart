@@ -55,7 +55,7 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
       home: FutureBuilder(
         builder: (context, AsyncSnapshot<User> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Container(color:Colors.white, width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: Center(child: CircularProgressIndicator()));
           } else {
             return UserProfile(snapshot.data as User);
           }
