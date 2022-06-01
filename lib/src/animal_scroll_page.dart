@@ -1,11 +1,9 @@
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'animal.dart';
-import 'package:kt_dart/kt.dart';
+
 
 void main() => runApp(AnimalScroll());
 
@@ -22,17 +20,6 @@ class _AnimalScrollState extends State<AnimalScroll> {
   final Map<String, String> body = {
     'mode': 'selectAllAnimals',
   };
-
-  /* Future<Animal> receiveAnimal() async {
-    HttpOverrides.global = MyHttpOverrides();
-    final response = await http.post(Uri.parse(url), body: body);
-    final animals = (response.body.replaceAll("][", ","));
-    final List parsedList = json.decode(animals);
-    List<Animal> list = parsedList.map((val) => Animal.fromJson(val)).toList();
-    list.removeAt(0);
-
-    return animalFromJson(animals);
-  }*/
 
   Future<Animals> getAnimals() async {
     HttpOverrides.global = MyHttpOverrides();
@@ -158,41 +145,3 @@ extension Unique<E, Id> on List<E> {
     return list;
   }
 }
-
-
-/*Future<Animal> getData() async {
-  var animals= await makePostRequest(url); // not sure what your events data/method is
-  for(Animal animal in animals){
-  return animal;
-  }
-
-  }
-  FutureBuilder(
-  future: makePostRequest(url),
-  builder: (context, snapshot) {
-  List<Animal> animals = snapshot.data;
-  if (!snapshot.hasData) return CircularProgressIndicator();
-  return new ListView.builder(
-  itemBuilder: (BuildContext context, int index) {  },
-  itemCount:animals.length)
-  }
-*/
-
-/**
- *
- * Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-    for (Animal animal in list)
-    ListView.builder(
-    itemCount: list.length,
-    itemBuilder: (context, index) {
-    return Card(child:Text(list[index].name));
-    },
-    ),
-    ],
-    );ç
-
-
- *
- */
