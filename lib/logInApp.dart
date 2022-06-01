@@ -95,7 +95,11 @@ class _LogInAppState extends State<LogInApp> {
   @override
   Widget build(BuildContext context) {
     // final Color color = HexColor.fromHex('#D3D3D3');
-
+    return ScreenUtilInit(
+        designSize: const Size(412, 869),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (BuildContext context, Widget? child) {
     return MaterialApp(
         theme: ThemeData(
             snackBarTheme: const SnackBarThemeData(
@@ -236,6 +240,7 @@ class _LogInAppState extends State<LogInApp> {
                 ),
               ]),
             )));
+  });
   }
 
   Future<void> _MapPage() async {

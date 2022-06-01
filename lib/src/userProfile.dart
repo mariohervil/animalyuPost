@@ -1,11 +1,13 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
-import 'package:google_maps_in_flutter/src/user.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_in_flutter/src/app_colors.dart';
-import 'dart:math' as math;
+import 'package:google_maps_in_flutter/src/user.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(UserProfileDesign());
@@ -37,7 +39,6 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
         username: arr.elementAt(0),
         email: arr.elementAt(1),
         phone: arr.elementAt(2));
-    //User user = User(email: email, phone: phone)
 
     return user;
   }
@@ -51,21 +52,40 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: FutureBuilder(
-        builder: (context, AsyncSnapshot<User> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Container(color:Colors.white, width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: Center(child: CircularProgressIndicator()));
-          } else {
-            return UserProfile(snapshot.data as User);
-          }
-        },
-        future: FillUser("1"),
-      ),
-      title: 'Profile',
-      // home: UserProfile(),
-      debugShowCheckedModeBanner: false,
-    );
+    return ScreenUtilInit(
+        designSize: const Size(412, 869),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (BuildContext context, Widget? child) {
+          return MaterialApp(
+            home: FutureBuilder(
+              builder: (context, AsyncSnapshot<User> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                      color: Colors.white,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: Stack(
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                           Positioned(bottom: 500.h, left: 150.w, child: Text("Cargando...", style: TextStyle(color: Colors.black, fontSize: 20.sp, decoration: TextDecoration.none),))
+                        ],
+                      ));
+                } else if (snapshot.connectionState == ConnectionState.done){
+                  return UserProfile(snapshot.data as User);
+                }
+                else {
+                return Dialog(backgroundColor: Colors.white, alignment: Alignment.center, child: Text("Connection Failed"),);
+
+                }
+              },
+              future: FillUser("1"),
+            ),
+            title: 'Profile',
+            // home: UserProfile(),
+            debugShowCheckedModeBanner: false,
+          );
+        });
   }
 
   void initState() {
@@ -171,7 +191,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.menu),
+                        icon: Icon(Icons.arrow_back),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -183,7 +203,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.notifications),
+                        icon: const Icon(Icons.menu),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_in_flutter/src/shelter.dart';
 import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
@@ -83,24 +83,35 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
   @override
   Widget build(BuildContext context) {
     transactionArguments =
-        ModalRoute.of(context)!.settings.arguments as TransactionID;
-    final size = MediaQuery.of(context).size;
+    ModalRoute
+        .of(context)!
+        .settings
+        .arguments as TransactionID;
+    final size = MediaQuery
+        .of(context)
+        .size;
     String id = transactionArguments.id;
-    return MaterialApp(
-      home: FutureBuilder(
-        builder: (context, AsyncSnapshot<Shelter> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            return ShelterProfile(snapshot.data as Shelter);
-          }
-        },
-        future: fillShelter(id),
-      ),
-      title: 'Profile',
-      // home: UserProfile(),
-      debugShowCheckedModeBanner: false,
-    );
+    return ScreenUtilInit(
+        designSize: const Size(412, 869),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (BuildContext context, Widget? child) {
+          return MaterialApp(
+            home: FutureBuilder(
+              builder: (context, AsyncSnapshot<Shelter> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else {
+                  return ShelterProfile(snapshot.data as Shelter);
+                }
+              },
+              future: fillShelter(id),
+            ),
+            title: 'Profile',
+            // home: UserProfile(),
+            debugShowCheckedModeBanner: false,
+          );
+        });
   }
 
   void initState() {
