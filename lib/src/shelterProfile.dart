@@ -1,14 +1,15 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_in_flutter/src/app_colors.dart';
 import 'package:google_maps_in_flutter/src/shelter.dart';
 import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_maps_in_flutter/src/app_colors.dart';
-import 'dart:math' as math;
 
 void main() {
   runApp(ShelterProfileDesign());
@@ -46,6 +47,7 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
 
     return user;
   }
+
   Future<Shelter> fillShelter(String id) async {
     Map<String, String> select = {
       'mode': 'selectShelterbyID',
@@ -63,15 +65,11 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
         name: arr.elementAt(0),
         email: arr.elementAt(1),
         phone: arr.elementAt(2),
-    address: arr.elementAt(3));
+        address: arr.elementAt(3));
     //User user = User(email: email, phone: phone)
 
     return shelter;
   }
-
-
-
-
 
   Future<String> makePostRequest(String url, Map<String, String> body) async {
     HttpOverrides.global = MyHttpOverrides();
@@ -83,13 +81,8 @@ class _ShelterProfileDesignState extends State<ShelterProfileDesign> {
   @override
   Widget build(BuildContext context) {
     transactionArguments =
-    ModalRoute
-        .of(context)!
-        .settings
-        .arguments as TransactionID;
-    final size = MediaQuery
-        .of(context)
-        .size;
+        ModalRoute.of(context)!.settings.arguments as TransactionID;
+    final size = MediaQuery.of(context).size;
     String id = transactionArguments.id;
     return ScreenUtilInit(
         designSize: const Size(412, 869),
