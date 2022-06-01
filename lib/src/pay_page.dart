@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_in_flutter/screens.dart';
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
+import '../util/page_directory.dart';
 import '../widgets/dismiss_focus_overlay.dart';
+import 'app_colors.dart';
 
 
 
@@ -29,13 +31,40 @@ class _payPageState extends State<payPageState> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        home: Scaffold(
+      appBar: AppBar(
+          toolbarHeight: 50,
+          title: Center(child: Text("Donate Screen")),
+          flexibleSpace: Container(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          color: AppColors.marronOscuro,
+                          onPressed: () {
+                            Navigator.pushNamedAndRemoveUntil(
+                              context, Routes.mapPage, (
+                                Route<dynamic> route) => false,
+                            );
+                          },
+                        ),
+                      ]
+                  ),
+                ]
+            )
+        )
+      ),
       body: ListView(children: [
         ...ListTile.divideTiles(
           context: context,
           tiles: [for (final example in Example.screens) example],
         ),
       ]),
+        )
     );
   }
 }

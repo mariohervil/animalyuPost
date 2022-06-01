@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_in_flutter/src/app_colors.dart';
 import 'dart:math' as math;
 
+import '../util/page_directory.dart';
+
 void main() {
   runApp(UserProfileDesign());
 }
@@ -134,8 +136,15 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   static late String email;
   static late String phone;
 
+
   @override
   Widget build(BuildContext context) {
+
+    Future<void> _MapPage() async {
+      Navigator.pushNamedAndRemoveUntil(
+        context, Routes.mapPage, (Route<dynamic> route) => false,
+      );
+    }
     //foto();
     //FillUser("1");
     return Container(
@@ -167,9 +176,11 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.menu),
+                        icon: Icon(Icons.arrow_back),
                         color: AppColors.marronOscuro,
-                        onPressed: () {},
+                        onPressed: () {
+                          _MapPage();
+                        },
                       ),
                       const Text(
                         "Profile",

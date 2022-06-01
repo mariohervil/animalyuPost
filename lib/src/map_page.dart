@@ -89,7 +89,7 @@ class _mapPageState extends State<mapPageState> {
 
   Widget _buildDrawerHeader() {
     return DrawerHeader(
-        margin: const EdgeInsets.only(top: 10, left: 0, right: 0,bottom: 40),
+        margin: const EdgeInsets.only(top: 10, left: 0, right: 0,bottom: 10),
         padding: EdgeInsets.zero,
         decoration: const BoxDecoration(
             image: const DecorationImage(
@@ -100,7 +100,7 @@ class _mapPageState extends State<mapPageState> {
           const Positioned(
               bottom: 20.0,
               left: 20.0,
-              child: Text("Animal yu",
+              child: Text("",
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18.0,
