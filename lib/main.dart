@@ -6,6 +6,7 @@ import 'package:google_maps_in_flutter/src/editProfile.dart';
 import 'package:google_maps_in_flutter/src/infoShelter_page.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:google_maps_in_flutter/src/map_page.dart';
+import 'package:google_maps_in_flutter/src/otherShelterProfile.dart';
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
 import 'package:google_maps_in_flutter/src/pay_page.dart';
 import 'package:google_maps_in_flutter/src/registerShelter.dart';
@@ -40,10 +41,11 @@ class MyApp extends StatelessWidget {
         Routes.registerApp: (context) => const RegisterUser(),
         Routes.logApp: (context) => const LogInApp(),
         Routes.shelterProfile: (context) =>  const ShelterProfileDesign(),
-        Routes.editProfile: (context) => EditProfile(),
+        Routes.editProfile: (context) => EditProfileDesign(),
         Routes.registerShelter: (context) => const RegisterShelter(),
         Routes.devProfile: (context) => const DevProfileDesign(),
         Routes.userProfile: (context) => const UserProfileDesign(),
+        Routes.otherShelterProfile: (context) => const OtherShelterProfileDesign(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),

@@ -1,49 +1,143 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_in_flutter/src/app_colors.dart';
-import 'dart:math' as math;
+import 'package:google_maps_in_flutter/src/shelter.dart';
+import 'package:google_maps_in_flutter/src/transaction_id.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(ProfileDesign());
+  runApp(OtherShelterProfileDesign());
 }
 
-class ProfileDesign extends StatefulWidget {
+class OtherShelterProfileDesign extends StatefulWidget {
+  const OtherShelterProfileDesign({Key? key}) : super(key: key);
+
   @override
-  State<ProfileDesign> createState() => _ProfileDesignState();
+  State<OtherShelterProfileDesign> createState() =>
+      _OtherShelterProfileDesignState();
 }
 
-class _ProfileDesignState extends State<ProfileDesign> {
+class _OtherShelterProfileDesignState extends State<OtherShelterProfileDesign> {
+  final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
+  late TransactionID transactionArguments;
+
+  Future<Shelter> fillShelter(String id) async {
+    Map<String, String> select = {
+      'mode': 'selectShelterbyID',
+      'shelter_id': id,
+    };
+
+    HttpOverrides.global = MyHttpOverrides();
+    final response = await http.post(Uri.parse(url), body: select);
+
+    var arr = response.body.split(", ");
+    //sleep(Duration(seconds: 1));
+    // print(response);
+
+    Shelter shelter = Shelter(
+        name: arr.elementAt(0),
+        email: arr.elementAt(1),
+        phone: arr.elementAt(2),
+        address: arr.elementAt(3));
+    print(shelter.name);
+    //User user = User(email: email, phone: phone)
+
+    return shelter;
+  }
+
+  Future<String> makePostRequest(String url, Map<String, String> body) async {
+    HttpOverrides.global = MyHttpOverrides();
+    final response = await http.post(Uri.parse(url), body: body);
+
+    return response.body;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Profile',
-      home: Profile(),
-      debugShowCheckedModeBanner: false,
-    );
+    transactionArguments =
+        ModalRoute.of(context)!.settings.arguments as TransactionID;
+    final size = MediaQuery.of(context).size;
+    String id = transactionArguments.id;
+    return ScreenUtilInit(
+        designSize: const Size(412, 869),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (BuildContext context, Widget? child) {
+          return MaterialApp(
+            home: FutureBuilder(
+              builder: (context, AsyncSnapshot<Shelter> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/animalyuTexture.jpg",
+                            ),
+                            fit: BoxFit.cover,
+                            opacity: 0.9,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.white54,
+                                blurRadius: 0,
+                                offset: Offset(0, 0))
+                          ]),
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: Stack(
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                          Positioned(
+                              bottom: 500.h,
+                              left: 150.w,
+                              child: Text(
+                                "Cargando...",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20.sp,
+                                    decoration: TextDecoration.none),
+                              ))
+                        ],
+                      ));
+                } else {
+                  return ShelterProfile(snapshot.data as Shelter);
+                }
+              },
+              future: fillShelter("6"),
+            ),
+            title: 'Profile',
+            // home: UserProfile(),
+            debugShowCheckedModeBanner: false,
+          );
+        });
   }
 
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
 }
 
-class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
+class ShelterProfile extends StatelessWidget {
+  ShelterProfile(this.shelter);
+
+  Shelter shelter;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(shelter),
       body: Container(
-        width: 600,
-        height: 400,
-        decoration: BoxDecoration(image: DecorationImage(
-            image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
             boxShadow: [
               BoxShadow(
                 color: Colors.white,
@@ -56,22 +150,33 @@ class Profile extends StatelessWidget {
           child: CustomPaint(
             foregroundPainter: LineBottomPainter(),
             child: Column(
-              children: [Padding(
-                padding: const EdgeInsets.fromLTRB(0, 280, 27, 0),
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(elevation: 10,
-                    primary: Colors.white,
-                    shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(30.0),
-                      side: BorderSide(color: Colors.white),
-                    ),),
-
-                  child: Text("Donar",
-                    style: TextStyle(color: Colors.black),),
-
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 280, 27, 0),
                 ),
-              )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          elevation: 10,
+                          primary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                        child: Text(
+                          "Donar",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -82,6 +187,10 @@ class Profile extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
+  Shelter shelter;
+
+  CustomAppBar(this.shelter);
+
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
 
   Future<ui.Image> loadImage() async {
@@ -102,8 +211,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    foto();
-    FillUser("1");
+    //foto();
+    //FillUser("1");
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -112,8 +221,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
         clipper: CClipper(),
         child: Container(
           decoration: BoxDecoration(
-            //color: Colors.black,
-            //shape: AppBarBorder(),
+              //color: Colors.black,
+              //shape: AppBarBorder(),
               image: DecorationImage(
                   image: new AssetImage("assets/animalyuTexture.jpg"),
                   opacity: 0.5,
@@ -133,7 +242,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.menu),
+                        icon: Icon(Icons.arrow_back),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -145,7 +254,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.notifications),
+                        icon: const Icon(Icons.menu),
                         color: AppColors.marronOscuro,
                         onPressed: () {},
                       ),
@@ -172,17 +281,14 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                       clipper: CustomClipPath(),
                                       child: Container(
                                         width:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width,
+                                            MediaQuery.of(context).size.width,
                                         decoration: BoxDecoration(
                                             color: Colors.white,
                                             image: DecorationImage(
                                               opacity: 0.1,
                                               fit: BoxFit.fill,
                                               image:
-                                              AssetImage("assets/a.jpeg"),
+                                                  AssetImage("assets/a.jpeg"),
                                             )),
                                         child: Column(
                                           children: [
@@ -191,16 +297,16 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                                   0, 0, 120, 0),
                                               child: CustomPaint(
                                                 foregroundPainter:
-                                                LinePainter(),
+                                                    LinePainter(),
                                               ),
                                             ),
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Padding(
                                                   padding:
-                                                  const EdgeInsets.all(8.0),
+                                                      const EdgeInsets.all(8.0),
                                                   child: Text(
                                                     "Nombre",
                                                     style: TextStyle(
@@ -213,54 +319,54 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                             ),
                                             Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
-                                                nombre,
+                                                shelter.name,
                                                 style: TextStyle(
                                                     color:
-                                                    AppColors.marronOscuro),
+                                                        AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
                                                 "Correo",
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     color:
-                                                    AppColors.marronOscuro),
+                                                        AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
-                                                email,
+                                                shelter.email,
                                                 style: TextStyle(
                                                     color:
-                                                    AppColors.marronOscuro),
+                                                        AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
                                                 "Teléfono",
                                                 style: TextStyle(
                                                     fontSize: 18,
                                                     color:
-                                                    AppColors.marronOscuro),
+                                                        AppColors.marronOscuro),
                                               ),
                                             ),
                                             Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Text(
-                                                phone,
+                                                shelter.phone,
                                                 style: TextStyle(
                                                     color:
-                                                    AppColors.marronOscuro),
+                                                        AppColors.marronOscuro),
                                               ),
                                             ),
                                           ],
@@ -270,7 +376,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                   ],
                                 ),
                                 decoration:
-                                BoxDecoration(color: Colors.transparent),
+                                    BoxDecoration(color: Colors.transparent),
                               ),
                             ),
                           ),
@@ -292,11 +398,10 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                     ],
                                     shape: BoxShape.rectangle,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(40)),
+                                        BorderRadius.all(Radius.circular(40)),
                                     image: DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            "https://images3.memedroid.com/images/UPLOADED753/618f10769197d.jpeg"))),
+                                        image: AssetImage("assets/cat.png"))),
                               ),
                             ),
                           ),
@@ -313,16 +418,18 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                                 height: 32,
                                 child: ElevatedButton(
                                   onPressed: () {},
-                                  style: ElevatedButton.styleFrom(elevation: 10,
-                                      primary: Colors.white,
-                                      shape: new RoundedRectangleBorder(
-                                        borderRadius: new BorderRadius.circular(30.0),
-                                        side: BorderSide(color: Colors.white),
-                                      ),),
-
-                                  child: Text("Adoptar",
-                                    style: TextStyle(color: Colors.black),),
-
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 10,
+                                    primary: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      side: BorderSide(color: Colors.white),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Adoptar",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
                                 ),
                               ),
                             ),
@@ -355,7 +462,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     nombre = await arr[0];
     email = await arr[1];
     phone = await arr[2];
-    sleep(Duration(seconds: 1));
+    //sleep(Duration(seconds: 1));
     print(response);
   }
 
@@ -485,25 +592,4 @@ class LineBottomPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
   }
-}
-
-class AppBarBorder extends ShapeBorder {
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()
-      ..lineTo(0, rect.size.height - 70)..lineTo(
-          rect.size.width, rect.size.height)..lineTo(rect.size.width, 0);
-  }
-
-  @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.only(bottom: 0);
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => ui.Path();
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
-
-  @override
-  ShapeBorder scale(double t) => this;
 }

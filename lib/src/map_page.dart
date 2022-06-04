@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
+import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
 class mapPageState extends StatefulWidget {
@@ -144,10 +145,10 @@ class _mapPageState extends State<mapPageState> {
               onTap: () {
                 Navigator.pushNamedAndRemoveUntil(
                     context,
-                    Routes.shelterProfile,
+                    Routes.otherShelterProfile,
                         (Route<dynamic> route) => false,
-                    arguments: SuccessfulTransactionParameters(
-                        office.address, office.id, office.lat,office.lng,office.name, office.phone));
+                    arguments: TransactionID(
+                         office.id));
 
               }
           ),
