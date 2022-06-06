@@ -11,6 +11,8 @@ import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
 import 'package:http/http.dart' as http;
 
+import '../util/page_directory.dart';
+
 void main() {
   runApp(ShelterProfileDesign());
 }
@@ -175,6 +177,33 @@ class ShelterProfile extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 280, 27, 0),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context, Routes.payPage, (Route<dynamic> route) => false,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 10,
+                          primary: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            side: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                        child: Text(
+                          "Donar",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
 ]
             ),
           ),

@@ -164,7 +164,7 @@ class _LogInAppState extends State<LogInApp> {
                     ),
                     prefixIcon:
                         const Icon(Icons.lock_outline, color: Colors.black),
-                    hintText: "Password",
+                    hintText: "Contraseña",
                     suffixIcon: IconButton(
                       icon: Icon(
                         _passwordVisible
@@ -199,7 +199,7 @@ class _LogInAppState extends State<LogInApp> {
                         color: Colors.white,
                       ),
                       child: const Text(
-                        "log in",
+                        "Iniciar sesión",
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.w600,
@@ -214,7 +214,7 @@ class _LogInAppState extends State<LogInApp> {
                       EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
                 ),
                 TextButton(
-                  child: const Text("Don't have an account? Sign up here"),
+                  child: const Text("No tienes una cuenta? Regístrate aquí"),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -224,7 +224,7 @@ class _LogInAppState extends State<LogInApp> {
                   },
                 ),
                 TextButton(
-                  child: const Text("Centro de acogida? Sign up here"),
+                  child: const Text("Eres un centro de acogida? Regístrate aquí"),
                   onPressed: () {
                     Navigator.push(
                       context,

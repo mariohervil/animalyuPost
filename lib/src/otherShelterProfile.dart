@@ -10,6 +10,8 @@ import 'package:google_maps_in_flutter/src/shelter.dart';
 import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:http/http.dart' as http;
 
+import '../util/page_directory.dart';
+
 void main() {
   runApp(OtherShelterProfileDesign());
 }
@@ -160,7 +162,11 @@ class ShelterProfile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamedAndRemoveUntil(
+                            context, Routes.payPage, (Route<dynamic> route) => false,
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           elevation: 10,
                           primary: Colors.white,

@@ -15,6 +15,7 @@ import 'package:google_maps_in_flutter/src/userProfile.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
 import 'devProfile.dart';
+import 'goomap.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         Routes.devProfile: (context) => const DevProfileDesign(),
         Routes.userProfile: (context) => const UserProfileDesign(),
         Routes.otherShelterProfile: (context) => const OtherShelterProfileDesign(),
+        Routes.goomap: (context) => const MapsDemo(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),

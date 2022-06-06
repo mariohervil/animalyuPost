@@ -52,6 +52,7 @@ dependencies:
   json_annotation: 4.5.0
   kt_dart: ^0.10.0
   ftpconnect: ^1.0.1
+  location: ^4.4.0
 dev_dependencies:
   json_serializable: ^6.2.0
   flutter_test:

@@ -11,5 +11,6 @@ class Routes {
   static const String logApp = '/logInApp';
   static const String editProfile = '/editProfile';
   static const String otherShelterProfile = '/otherShelterProfile';
+  static const String goomap ='/goomap';
 
 }

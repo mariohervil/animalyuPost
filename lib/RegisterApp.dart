@@ -59,7 +59,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 style: const TextStyle(fontSize: 16),
                 controller: uNController,
                 decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Nombre de usuario',
                    ),
               ),
             ),
@@ -69,7 +69,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 style: const TextStyle(fontSize: 16),
                 controller: uPController,
                 decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Contraseña',
                  ),
               ),
             ),
@@ -89,7 +89,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 style: const TextStyle(fontSize: 16),
                 controller: uPhController,
                 decoration: InputDecoration(
-                    labelText: 'Phone',
+                    labelText: 'Teléfono',
                ),
               ),
             ),
@@ -99,7 +99,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 style: ElevatedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 18)),
                 onPressed: postData,
-                child: const Text("Register"),
+                child: const Text("Registrar"),
               ),
             ),
           ],

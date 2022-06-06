@@ -101,7 +101,7 @@ class _DevProfileDesignState extends State<DevProfileDesign> {
                               },
                             ),
                             const Text(
-                              "Profile",
+                              "Perfil",
                               style: TextStyle(
                                 color: AppColors.marronOscuro,
                                 fontSize: 16,

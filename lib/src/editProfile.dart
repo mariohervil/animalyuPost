@@ -46,14 +46,6 @@ class _ProfileDesignState extends State<EditProfileDesign> {
 
     return user;
   }
-
-
-
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
