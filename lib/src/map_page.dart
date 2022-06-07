@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
+import 'package:google_maps_in_flutter/src/shelter.dart';
 import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
@@ -23,52 +24,98 @@ class _mapPageState extends State<mapPageState> {
   late double lng;
 
   late String name;
-
   late String phone;
 
+  static late String userId;
+
+
+
   final Map<String, Marker> _markers = {};
+
+  static late TransactionID transactionID;
+@override
+  void initState(){
+  super.initState();
+  Future.delayed(Duration.zero, () {
+    setState(() {
+      transactionID = ModalRoute.of(context)?.settings.arguments as TransactionID;
+      userId = transactionID.id;
+    });
+});
+}
+
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
+      /**/home: Scaffold(
         appBar: AppBar(
           title: const Text('Animalyu'),
           backgroundColor: Colors.green[700],
-
         ),
-        drawer:Drawer(
+        drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               _buildDrawerHeader(),
-              _buildDrawerItem(icon: Icons.account_circle, text: 'Profile', onTap: () => {
-                Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.userProfile, (Route<dynamic> route) => false,
-                )
-              }),
-              _buildDrawerItem(icon: Icons.map_rounded, text: 'Localize an animal', onTap: () => {
-                Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.devProfile, (Route<dynamic> route) => false,
-                )
-              }),
-              _buildDrawerItem(icon: Icons.contact_phone, text: 'Contact Info', onTap: () => {
-              Navigator.pushNamedAndRemoveUntil(
-              context, Routes.devProfile, (Route<dynamic> route) => false,
-              )}),
-              _buildDrawerItem(icon: Icons.payment, text: 'Donate to our team ', onTap: () => {
-                Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.payPage, (Route<dynamic> route) => false,
-                )}),
+              _buildDrawerItem(
+                  icon: Icons.account_circle,
+                  text: 'Profile',
+                  onTap: () => {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          Routes.userProfile,
+                          (Route<dynamic> route) => false,
+                          arguments: TransactionID(userId)
+                        )
+                      }),
+              _buildDrawerItem(
+                  icon: Icons.map_rounded,
+                  text: 'Localize an animal',
+                  onTap: () => {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          Routes.devProfile,
+                          (Route<dynamic> route) => false,
+                        )
+                      }),
+              _buildDrawerItem(
+                  icon: Icons.contact_phone,
+                  text: 'Contact Info',
+                  onTap: () => {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          Routes.devProfile,
+                          (Route<dynamic> route) => false,
+                        )
+                      }),
+              _buildDrawerItem(
+                  icon: Icons.payment,
+                  text: 'Donate to our team ',
+                  onTap: () => {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          Routes.payPage,
+                          (Route<dynamic> route) => false,
+                        )
+                      }),
               const Divider(),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 300, 10, 0),
                 // child: Text("Log In Screen"),
               ),
-              _buildDrawerItem(icon: Icons.logout, text: 'Log Out', onTap: () => {
-                Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.logApp, (Route<dynamic> route) => false,
-                )}),
+              _buildDrawerItem(
+                  icon: Icons.logout,
+                  text: 'Log Out',
+                  onTap: () => {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          Routes.logApp,
+                          (Route<dynamic> route) => false,
+                        )
+                      }),
               ListTile(
                 title: const Text('App version 1.0.0'),
                 onTap: () {},
@@ -78,7 +125,7 @@ class _mapPageState extends State<mapPageState> {
         ),
         body: GoogleMap(
           onMapCreated: _onMapCreated,
-          initialCameraPosition:  const CameraPosition(
+          initialCameraPosition: const CameraPosition(
             target: const LatLng(41.3879, 2.16992),
             zoom: 12,
           ),
@@ -90,13 +137,12 @@ class _mapPageState extends State<mapPageState> {
 
   Widget _buildDrawerHeader() {
     return DrawerHeader(
-        margin: const EdgeInsets.only(top: 10, left: 0, right: 0,bottom: 10),
+        margin: const EdgeInsets.only(top: 10, left: 0, right: 0, bottom: 10),
         padding: EdgeInsets.zero,
         decoration: const BoxDecoration(
             image: const DecorationImage(
                 fit: BoxFit.fill,
-                image:  AssetImage('assets/animalyuLogo.png')
-            )),
+                image: AssetImage('assets/animalyuLogo.png'))),
         child: Stack(children: <Widget>[
           const Positioned(
               bottom: 20.0,
@@ -110,7 +156,9 @@ class _mapPageState extends State<mapPageState> {
   }
 
   Widget _buildDrawerItem(
-      {required IconData icon, required String text, required GestureTapCallback onTap}) {
+      {required IconData icon,
+      required String text,
+      required GestureTapCallback onTap}) {
     return ListTile(
       title: Row(
         children: <Widget>[
@@ -132,8 +180,8 @@ class _mapPageState extends State<mapPageState> {
       for (locations.Office office in googleOffices.offices) {
         address = office.address;
         id = office.id;
-        lat= office.lat;
-        lng= office.lng;
+        lat = office.lat;
+        lng = office.lng;
         name = office.name;
         phone = office.phone;
         final marker = Marker(
@@ -143,20 +191,13 @@ class _mapPageState extends State<mapPageState> {
               title: office.name,
               snippet: office.address,
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    Routes.shelterProfile,
-                        (Route<dynamic> route) => false,
-                    arguments: TransactionID(
-                         office.id));
-
-              }
-          ),
+                Navigator.pushNamedAndRemoveUntil(context,
+                    Routes.otherShelterProfile, (Route<dynamic> route) => false,
+                    arguments: TransactionID(office.id));
+              }),
         );
         _markers[office.name] = marker;
       }
     });
   }
 }
-
-

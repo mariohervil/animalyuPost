@@ -12,5 +12,7 @@ class Routes {
   static const String editProfile = '/editProfile';
   static const String otherShelterProfile = '/otherShelterProfile';
   static const String goomap ='/goomap';
+  static const String animalsShelter = '/animal_by_shelter';
+  static const String animalsScroll = '/animal_scroll_page';
 
 }

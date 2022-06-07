@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
 import 'package:google_maps_in_flutter/src/registerShelter.dart';
+import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,9 +61,9 @@ class _LogInAppState extends State<LogInApp> {
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: body);
     var array = response.body.split(",");
-    array[0];
-    print("ssaaaaaaaaaaaaaaass ${array}");
-    checkLogin(array[0]);
+
+    print("ssaaaaaaaaaaaaaaass $array");
+    checkLogin(array[0], array[1]);
 
     return response;
   }
@@ -224,7 +225,8 @@ class _LogInAppState extends State<LogInApp> {
                   },
                 ),
                 TextButton(
-                  child: const Text("Eres un centro de acogida? Regístrate aquí"),
+                  child:
+                      const Text("Eres un centro de acogida? Regístrate aquí"),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -245,34 +247,35 @@ class _LogInAppState extends State<LogInApp> {
     );
   }
 
-  Future<void> _toShelterProfile() async {
+  Future<void> _toShelterProfile() async {}
 
-    }
-
-
-
-  void checkLogin(String response) {
+  void checkLogin(String response, String id) {
     //print(response);
     if (response == "1") {
       //ScaffoldMessenger()
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Inicio de sesión correcto'),
           backgroundColor: Colors.green));
-      _MapPage();
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.mapPage, (Route<dynamic> route) => false,
+          arguments: TransactionID(id));
+
+     // _MapPage();
     }
     if (response == "2") {
       //ScaffoldMessenger()
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Inicio de sesión correcto'),
           backgroundColor: Colors.green));
-      _toShelterProfile();
+      Navigator.pushNamedAndRemoveUntil(
+          context, Routes.shelterProfile, (Route<dynamic> route) => false,
+          arguments: TransactionID(id));
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Nombre de usuario o contraseña incorrectos'),
           backgroundColor: Colors.red));
     }
   }
-
 
   void _navigateToNextScreen(BuildContext context) {
     Navigator.of(context)

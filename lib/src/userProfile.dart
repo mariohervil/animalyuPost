@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_in_flutter/src/app_colors.dart';
+import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
 import 'package:http/http.dart' as http;
+
+import '../util/page_directory.dart';
 
 void main() {
   runApp(UserProfileDesign());
@@ -30,15 +33,14 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
     };
     HttpOverrides.global = MyHttpOverrides();
     final response = await http.post(Uri.parse(url), body: loginBody);
-
+//print(id + ", " + response.body);
     var arr = response.body.split(", ");
-    //sleep(Duration(seconds: 1));
-    // print(response);
-
     User user = User(
+        id: id,
         username: arr.elementAt(0),
         email: arr.elementAt(1),
-        phone: arr.elementAt(2));
+        phone: arr.elementAt(2),
+        photopath: "");
 
     return user;
   }
@@ -50,84 +52,363 @@ class _UserProfileDesignState extends State<UserProfileDesign> {
     return response.body;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-        designSize: const Size(412, 869),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (BuildContext context, Widget? child) {
-          return MaterialApp(
-            home: FutureBuilder(
-              builder: (context, AsyncSnapshot<User> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              "assets/animalyuTexture.jpg",
-                            ),
-                            fit: BoxFit.cover,
-                            opacity: 0.9,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.white54,
-                                blurRadius: 0,
-                                offset: Offset(0, 0))
-                          ]),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Stack(
-                        children: [
-                          Center(child: CircularProgressIndicator()),
-                          Positioned(
-                              bottom: 500.h,
-                              left: 150.w,
-                              child: Text(
-                                "Cargando...",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.sp,
-                                    decoration: TextDecoration.none),
-                              ))
-                        ],
-                      ));
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  return UserProfile(snapshot.data as User);
-                } else {
-                  return Dialog(
-                    backgroundColor: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text("Connection Failed"),
-                  );
-                }
-              },
-              future: FillUser("1"),
-            ),
-            title: 'Profile',
-            // home: UserProfile(),
-            debugShowCheckedModeBanner: false,
-          );
-        });
-  }
+  static late String userId;
+  late TransactionID transactionID;
 
+  @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        transactionID =
+            ModalRoute.of(context)?.settings.arguments as TransactionID;
+        userId = transactionID.id;
+      });
+    });
   }
-}
-
-class UserProfile extends StatelessWidget {
-  UserProfile(this.user);
-
-  User user;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: CustomAppBar(user),
+    return  Scaffold(
+      body: ScreenUtilInit(
+            designSize: const Size(412, 869),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (BuildContext context, Widget? child) {
+              return FutureBuilder(
+                builder: (context, AsyncSnapshot<User> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                "assets/animalyuTexture.jpg",
+                              ),
+                              fit: BoxFit.cover,
+                              opacity: 0.9,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.white54,
+                                  blurRadius: 0,
+                                  offset: Offset(0, 0))
+                            ]),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Stack(
+                          children: [
+                            Center(child: CircularProgressIndicator()),
+                            Positioned(
+                                bottom: 500.h,
+                                left: 150.w,
+                                child: Text(
+                                  "Cargando...",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20.sp,
+                                      decoration: TextDecoration.none),
+                                ))
+                          ],
+                        ));
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    return UserProfile(snapshot.data as User, context);
+                  } else {
+                    return Dialog(
+                      backgroundColor: Colors.white,
+                      alignment: Alignment.center,
+                      child: Text("Connection Failed"),
+                    );
+                  }
+                },
+                future: FillUser(userId),
+              );
+            }),
+      );
+      /*title: 'Profile',
+      // home: UserProfile(),
+      debugShowCheckedModeBanner: false,
+    );*/
+  }
+
+
+
+}
+
+class UserProfile extends StatelessWidget {
+  UserProfile(this.user, this.contexts);
+
+  User user;
+BuildContext contexts;
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery
+        .of(context)
+        .size;
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+        home:Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        toolbarHeight: 350,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: new AssetImage("assets/noteBack.jpg"),
+                  fit: BoxFit.fill
+              ), boxShadow: [
+            BoxShadow(
+              color: Colors.white,
+              blurRadius: 0,
+              offset: Offset(0, 0),
+            ),
+          ]
+          ),
+          child: ClipPath(
+            clipper: CClipper(),
+            child: Container(
+              decoration: BoxDecoration(
+                //color: Colors.black,
+                //shape: AppBarBorder(),
+                  image: DecorationImage(
+                      image: new AssetImage("assets/animalyuTexture.jpg"),
+                      opacity: 0.5,
+                      fit: BoxFit.cover),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white,
+                      blurRadius: 0,
+                      offset: Offset(0, 0),
+                    ),
+                  ]),
+              child: Column(
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            color: AppColors.marronOscuro,
+                            onPressed: () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                context, Routes.mapPage, (
+                                  Route<dynamic> route) => false,
+                              );
+                            },
+                          ),
+                          const Text(
+                            "Profile",
+                            style: TextStyle(
+                              color: AppColors.marronOscuro,
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.menu),
+                            color: Colors.transparent,
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10, 0, 0, 0),
+                                  child: Container(
+                                    width: 200,
+                                    height: 250,
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          color: AppColors.animalyuIcon,
+                                        ),
+                                        ClipPath(
+                                          clipper: CustomClipPath(),
+                                          child: Container(
+                                            width:
+                                            MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                image: DecorationImage(
+                                                  opacity: 0.1,
+                                                  fit: BoxFit.fill,
+                                                  image:
+                                                  AssetImage("assets/a.jpeg"),
+                                                )),
+                                            child: Column(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 120, 0),
+                                                  child: CustomPaint(
+                                                    foregroundPainter:
+                                                    LinePainter(),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                      const EdgeInsets.all(8.0),
+                                                      child: Text(
+                                                        "Nombre",
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color: AppColors
+                                                                .marronOscuro),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    user.username,
+                                                    style: TextStyle(
+                                                        color:
+                                                        AppColors.marronOscuro),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "Correo",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color:
+                                                        AppColors.marronOscuro),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    user.email,
+                                                    style: TextStyle(
+                                                        color:
+                                                        AppColors.marronOscuro),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "Teléfono",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color:
+                                                        AppColors.marronOscuro),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    user.phone,
+                                                    style: TextStyle(
+                                                        color:
+                                                        AppColors.marronOscuro),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    decoration:
+                                    BoxDecoration(color: Colors.transparent),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.fromLTRB(30, 0, 0, 0)),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+                                  child: Container(
+                                    width: 120,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.white,
+                                            blurRadius: 2,
+                                            offset: Offset(0, 0),
+                                          ),
+                                        ],
+                                        shape: BoxShape.rectangle,
+                                        borderRadius:
+                                        BorderRadius.all(Radius.circular(40)),
+                                        image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: AssetImage(
+                                                "assets/cat.png"))),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(280, 0, 0, 0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Transform.rotate(
+                                  angle: (math.pi * 0.055),
+                                  child: Container(
+                                    width: 110,
+                                    height: 32,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            Routes.editProfile,
+                                                (Route<dynamic> route) => false,
+                                            arguments: TransactionID(user.id));
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 10,
+                                        primary: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              30.0),
+                                          side: BorderSide(color: Colors.white),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "Editar",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),),
+      //CustomAppBar(user),
       body: Container(
         width: size.width,
         height: size.height,
@@ -155,14 +436,10 @@ class UserProfile extends StatelessWidget {
           ),
         ),
       ),
+    ),
     );
   }
-}
 
-class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
-  User user;
-
-  CustomAppBar(this.user);
 
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
 
@@ -182,241 +459,6 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   static late String email;
   static late String phone;
 
-  @override
-  Widget build(BuildContext context) {
-    //foto();
-    //FillUser("1");
-    return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill)),
-      child: ClipPath(
-        clipper: CClipper(),
-        child: Container(
-          decoration: BoxDecoration(
-            //color: Colors.black,
-            //shape: AppBarBorder(),
-              image: DecorationImage(
-                  image: new AssetImage("assets/animalyuTexture.jpg"),
-                  opacity: 0.5,
-                  fit: BoxFit.cover),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white,
-                  blurRadius: 0,
-                  offset: Offset(0, 0),
-                ),
-              ]),
-          child: Column(
-            children: [
-              Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back),
-                        color: AppColors.marronOscuro,
-                        onPressed: () {},
-                      ),
-                      const Text(
-                        "Profile",
-                        style: TextStyle(
-                          color: AppColors.marronOscuro,
-                          fontSize: 16,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.menu),
-                        color: AppColors.marronOscuro,
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                              child: Container(
-                                width: 200,
-                                height: 250,
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      color: AppColors.animalyuIcon,
-                                    ),
-                                    ClipPath(
-                                      clipper: CustomClipPath(),
-                                      child: Container(
-                                        width:
-                                        MediaQuery.of(context).size.width,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            image: DecorationImage(
-                                              opacity: 0.1,
-                                              fit: BoxFit.fill,
-                                              image:
-                                              AssetImage("assets/a.jpeg"),
-                                            )),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 120, 0),
-                                              child: CustomPaint(
-                                                foregroundPainter:
-                                                LinePainter(),
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "Nombre",
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        color: AppColors
-                                                            .marronOscuro),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                user.username,
-                                                style: TextStyle(
-                                                    color:
-                                                    AppColors.marronOscuro),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                "Correo",
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color:
-                                                    AppColors.marronOscuro),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                user.email,
-                                                style: TextStyle(
-                                                    color:
-                                                    AppColors.marronOscuro),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                "Teléfono",
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color:
-                                                    AppColors.marronOscuro),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                user.phone,
-                                                style: TextStyle(
-                                                    color:
-                                                    AppColors.marronOscuro),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                decoration:
-                                BoxDecoration(color: Colors.transparent),
-                              ),
-                            ),
-                          ),
-                          Padding(padding: EdgeInsets.fromLTRB(30, 0, 0, 0)),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                              child: Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white,
-                                        blurRadius: 2,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ],
-                                    shape: BoxShape.rectangle,
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(40)),
-                                    image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: AssetImage("assets/cat.png"))),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(280, 0, 0, 0),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Transform.rotate(
-                              angle: (math.pi * 0.055),
-                              child: Container(
-                                width: 110,
-                                height: 32,
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    elevation: 10,
-                                    primary: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      side: BorderSide(color: Colors.white),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Editar",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )),
-                    ],
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Future<String> makePostRequest(String url, Map<String, String> body) async {
     HttpOverrides.global = MyHttpOverrides();
@@ -449,6 +491,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   ui.Size get preferredSize => const ui.Size(double.infinity, 350);
+
+
 }
 
 class CClipper extends CustomClipper<Path> {

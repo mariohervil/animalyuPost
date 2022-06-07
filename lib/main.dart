@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/RegisterApp.dart';
 import 'package:google_maps_in_flutter/logInApp.dart';
+import 'package:google_maps_in_flutter/src/animal_by_shelter.dart';
+import 'package:google_maps_in_flutter/src/animal_scroll_page.dart';
 import 'package:google_maps_in_flutter/src/editProfile.dart';
 import 'package:google_maps_in_flutter/src/infoShelter_page.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
@@ -47,6 +49,8 @@ class MyApp extends StatelessWidget {
         Routes.devProfile: (context) => const DevProfileDesign(),
         Routes.userProfile: (context) => const UserProfileDesign(),
         Routes.otherShelterProfile: (context) => const OtherShelterProfileDesign(),
+        Routes.animalsShelter: (context) => const AnimalByShelter(),
+        Routes.animalsScroll: (context) => const AnimalScroll(),
         Routes.goomap: (context) => const MapsDemo(),
       },
       title: 'Flutter Demo',

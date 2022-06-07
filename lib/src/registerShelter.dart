@@ -74,6 +74,7 @@ class _RegisterShelterState extends State<RegisterShelter> {
                     decoration: InputDecoration(
                         labelText: 'Contraseña',
                         ),
+                    obscureText: true,
                   ),
                 ),
                 Padding(
@@ -154,7 +155,7 @@ class _RegisterShelterState extends State<RegisterShelter> {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Registrado correctamente'),
           backgroundColor: Colors.green));
-      _MapPage();
+      _Login();
 
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
@@ -202,9 +203,9 @@ class _RegisterShelterState extends State<RegisterShelter> {
           backgroundColor: Colors.red));
     }
   }
-  Future<void> _MapPage() async {
+  Future<void> _Login() async {
     Navigator.pushNamedAndRemoveUntil(
-      context, Routes.mapPage, (Route<dynamic> route) => false,
+      context, Routes.logApp, (Route<dynamic> route) => false,
     );
   }
 }

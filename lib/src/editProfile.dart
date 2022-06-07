@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ftpconnect/ftpconnect.dart';
+import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/src/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -12,19 +13,18 @@ import 'dart:math' as math;
 
 import 'package:image_picker/image_picker.dart';
 
+import '../util/page_directory.dart';
+
 void main() {
   runApp(EditProfileDesign());
 }
 
 class EditProfileDesign extends StatefulWidget {
   @override
-  State<EditProfileDesign> createState() => _ProfileDesignState();
+  State<EditProfileDesign> createState() => _EditProfileDesignState();
 }
 
-
-class _ProfileDesignState extends State<EditProfileDesign> {
-
-
+class _EditProfileDesignState extends State<EditProfileDesign> {
   final url = "https://animalyu.monlau-smx.com/test/php/phpPruebaProj.php";
 
   Future<User> FillUser(String id) async {
@@ -40,22 +40,30 @@ class _ProfileDesignState extends State<EditProfileDesign> {
     // print(response);
 
     User user = User(
+        id: id,
         username: arr.elementAt(0),
         email: arr.elementAt(1),
-        phone: arr.elementAt(2));
+        phone: arr.elementAt(2),
+    photopath: "");
 
     return user;
   }
+
+  static late String userId;
+
+  late TransactionID transactionID;
+
   @override
   Widget build(BuildContext context) {
+    transactionID = ModalRoute.of(context)!.settings.arguments as TransactionID;
+    userId = transactionID.id;
+
     return ScreenUtilInit(
-        designSize: const Size(412, 869),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (BuildContext context, Widget? child) {
-          return MaterialApp(
-            title: 'Profile',
-            home: FutureBuilder(
+          designSize: const Size(412, 869),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (BuildContext context, Widget? child) {
+            return FutureBuilder(
               builder: (context, AsyncSnapshot<User> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
@@ -91,7 +99,7 @@ class _ProfileDesignState extends State<EditProfileDesign> {
                         ],
                       ));
                 } else if (snapshot.connectionState == ConnectionState.done) {
-                  return EditProfile(snapshot.data as User);
+                  return EditProfile(snapshot.data as User, context);
                 } else {
                   return Dialog(
                     backgroundColor: Colors.white,
@@ -100,47 +108,82 @@ class _ProfileDesignState extends State<EditProfileDesign> {
                   );
                 }
               },
-              future: FillUser("1"),
-            ),
-            debugShowCheckedModeBanner: false,
-          );
-        });
+              future: FillUser(userId),
+            );
+          }
+    );
   }
 
+  @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        transactionID =
+            ModalRoute.of(context)?.settings.arguments as TransactionID;
+        userId = transactionID.id;
+      });
+    });
   }
 }
 
 class EditProfile extends StatelessWidget {
   User user;
+  BuildContext contexts;
   static const USER_PHOTO = 1;
   static const ANIMAL_PHOTO = 2;
-  EditProfile(this.user);
 
-  TextEditingController _textController = TextEditingController();
-  uploadPhoto(int action) async{
+  EditProfile(this.user, this.contexts);
 
+  final TextEditingController _textController = TextEditingController();
+
+  uploadPhotoFromGallery(int action) async {
     const userImageUrl = "https://animalyu.monlau-smx.com/imgs/users";
     const animalImageUrl = "https://animalyu.monlau-smx.com/imgs/animals";
     if (action == USER_PHOTO) {
-      FTPConnect ftpConnect = FTPConnect(userImageUrl,user:'admin2dam', pass:'Monlau2022@');
-      File fileToUpload = File('fileToUpload.txt');
-      await ftpConnect.connect();
-      bool res = await ftpConnect.uploadFileWithRetry(fileToUpload, pRetryCount: 2);
-      await ftpConnect.disconnect();
-      print(res);
-    }
-    else if (action == ANIMAL_PHOTO) {
-      FTPConnect ftpConnect = FTPConnect(animalImageUrl,user:'admin2dam', pass:'Monlau2022@');
+      FTPConnect ftpConnect =
+          FTPConnect(userImageUrl, user: 'admin2dam', pass: 'Monlau2022@');
       File fileToUpload = await _getFromGallery();
       await ftpConnect.connect();
-      bool res = await ftpConnect.uploadFileWithRetry(fileToUpload, pRetryCount: 2);
+      bool res =
+          await ftpConnect.uploadFileWithRetry(fileToUpload, pRemoteName: user.id + user.username, pRetryCount: 10);
+      await ftpConnect.disconnect();
+      print(res);
+    } else if (action == ANIMAL_PHOTO) {
+      FTPConnect ftpConnect =
+          FTPConnect(animalImageUrl, user: 'admin2dam', pass: 'Monlau2022@');
+      File fileToUpload = await _getFromGallery();
+      await ftpConnect.connect();
+      bool res =
+          await ftpConnect.uploadFileWithRetry(fileToUpload, pRetryCount: 2);
       await ftpConnect.disconnect();
       print(res);
     }
+  }
 
+  uploadPhotoFromCamera(int action) async {
+    const userImageUrl = "https://animalyu.monlau-smx.com/imgs/users";
+    const animalImageUrl = "https://animalyu.monlau-smx.com/imgs/animals";
+    if (action == USER_PHOTO) {
+      FTPConnect ftpConnect =
+          FTPConnect(userImageUrl, user: 'admin2dam', pass: 'Monlau2022@');
+      File fileToUpload = await _getFromCamera();
+      await ftpConnect.connect();
+      bool res =
+          await ftpConnect.uploadFileWithRetry(fileToUpload, pRetryCount: 2);
+      await ftpConnect.disconnect();
+      print(res);
+    } else if (action == ANIMAL_PHOTO) {
+      FTPConnect ftpConnect =
+          FTPConnect(animalImageUrl, user: 'admin2dam', pass: 'Monlau2022@');
+      File fileToUpload = await _getFromGallery();
+      await ftpConnect.connect();
+      bool res =
+          await ftpConnect.uploadFileWithRetry(fileToUpload, pRetryCount: 2);
+      await ftpConnect.disconnect();
+      print(res);
+    }
   }
 
   Future<File> _getFromGallery() async {
@@ -169,177 +212,248 @@ class EditProfile extends StatelessWidget {
     return imageFile;
   }
 
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill)),
-          child: ClipPath(
-            clipper: CClipper(),
-            child: Container(
-              decoration: BoxDecoration(
-                  //color: Colors.black
-                  //shape: AppBarBorder(),
-                  image: DecorationImage(
-                      image: new AssetImage("assets/animalyuTexture.jpg"),
-                      opacity: 0.5,
-                      fit: BoxFit.cover),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.white,
-                      blurRadius: 0,
-                      offset: Offset(0, 0),
-                    ),
-                  ]),
-              child: Column(
-                children: [
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.menu),
-                            color: AppColors.marronOscuro,
-                            onPressed: () {},
-                          ),
-                          const Text(
-                            "Profile",
-                            style: TextStyle(
-                              color: AppColors.marronOscuro,
-                              fontSize: 16,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.notifications),
-                            color: AppColors.marronOscuro,
-                            onPressed: () {},
-                          ),
-                        ],
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          toolbarHeight: 350,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/noteBack.jpg"),
+                    fit: BoxFit.fill
+                ), boxShadow: [
+              BoxShadow(
+                color: Colors.white,
+                blurRadius: 0,
+                offset: Offset(0, 0),
+              ),
+            ]
+            ),
+            child: ClipPath(
+              clipper: CClipper(),
+              child: Container(
+                decoration: BoxDecoration(
+                    //color: Colors.black
+                    //shape: AppBarBorder(),
+                    image: DecorationImage(
+                        image: AssetImage("assets/animalyuTexture.jpg"),
+                        opacity: 0.5,
+                        fit: BoxFit.cover),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white,
+                        blurRadius: 0,
+                        offset: Offset(0, 0),
                       ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                  child: Container(
-                                    width: 200,
-                                    height: 250,
-                                    decoration: BoxDecoration(
-                                        color: Colors.transparent),
+                    ]),
+                child: Column(
+                  children: [
+                    Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              color: AppColors.marronOscuro,
+                              onPressed: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context, Routes.userProfile, (
+                                    Route<dynamic> route) => false, arguments: TransactionID(user.id)
+                                );
+
+                              },
+                            ),
+                            const Text(
+                              "Profile",
+                              style: TextStyle(
+                                color: AppColors.marronOscuro,
+                                fontSize: 16,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.notifications),
+                              color: Colors.transparent,
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                    child: Container(
+                                      width: 200,
+                                      height: 250,
+                                      decoration: BoxDecoration(
+                                          color: Colors.transparent),
+                                      child: Stack(
+                                        children: [
+                                          //TODO USER INFO
+                                          Container(
+                                            color: AppColors.animalyuIcon,
+                                          ),
+                                          ClipPath(
+                                            clipper: CustomClipPath(),
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  image: DecorationImage(
+                                                    opacity: 0.1,
+                                                    fit: BoxFit.fill,
+                                                    image: AssetImage(
+                                                        "assets/a.jpeg"),
+                                                  )),
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.fromLTRB(
+                                                        0, 0, 120, 0),
+                                                  ),
+                                                  Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(20, 0, 20, 0),
+                                                      child: TextField(
+                                                        controller:
+                                                            _nameController,
+                                                        textAlign:
+                                                            TextAlign.center,
+
+                                                        decoration:
+                                                            InputDecoration(
+                                                                labelText:
+                                                                    "Usuario",
+                                                                floatingLabelBehavior:
+                                                                    FloatingLabelBehavior
+                                                                        .always,
+                                                                hintText:
+                                                                    user.username,
+                                                                hintStyle:
+                                                                    TextStyle(
+                                                                  fontSize: 16.sp,
+                                                                  color: AppColors
+                                                                      .marronOscuro,
+                                                                )), // TextStyle // Input Decoration
+                                                      ) // TextField
+                                                      ),
+                                                  Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(20, 0, 20, 0),
+                                                      child: TextField(
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        controller:
+                                                            _emailController,
+                                                        decoration:
+                                                            InputDecoration(
+                                                                labelText:
+                                                                    "Correo",
+                                                                floatingLabelBehavior:
+                                                                    FloatingLabelBehavior
+                                                                        .always,
+                                                                hintText:
+                                                                    user.email,
+                                                                hintStyle:
+                                                                    TextStyle(
+                                                                  fontSize: 16.sp,
+                                                                  color: AppColors
+                                                                      .marronOscuro,
+                                                                )), // TextStyle // Input Decoration
+                                                      ) // TextF
+                                                      ),
+                                                  Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(20, 0, 20, 0),
+                                                      child: TextField(
+                                                        controller:
+                                                            _phoneController,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        decoration:
+                                                            InputDecoration(
+                                                                labelText:
+                                                                    "Teléfono",
+                                                                floatingLabelBehavior:
+                                                                    FloatingLabelBehavior
+                                                                        .always,
+                                                                hintText:
+                                                                    user.phone,
+                                                                hintStyle:
+                                                                    TextStyle(
+                                                                  fontSize: 16.sp,
+                                                                  color: AppColors
+                                                                      .marronOscuro,
+                                                                )), // TextStyle // Input Decoration
+                                                      ) // TextF
+                                                      ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(30, 0, 0, 0)),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
                                     child: Stack(
                                       children: [
-                                        //TODO USER INFO
                                         Container(
-                                          color: AppColors.animalyuIcon,
-                                        ),
-                                        ClipPath(
-                                          clipper: CustomClipPath(),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                image: DecorationImage(
-                                                  opacity: 0.1,
-                                                  fit: BoxFit.fill,
-                                                  image: AssetImage(
-                                                      "assets/a.jpeg"),
-                                                )),
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 120, 0),
+                                          width: 120,
+                                          height: 120,
+                                          decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.white,
+                                                  blurRadius: 0,
+                                                  offset: Offset(0, 0),
                                                 ),
-                                                Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(20, 0, 20, 0),
-                                                    child: TextField(
-                                                      controller:
-                                                          _nameController,
-                                                      textAlign:
-                                                          TextAlign.center,
-
-                                                      decoration:
-                                                          InputDecoration(
-                                                              labelText:
-                                                                  "Nombre",
-                                                              floatingLabelBehavior:
-                                                                  FloatingLabelBehavior
-                                                                      .always,
-                                                              hintText:
-                                                                  user.username,
-                                                              hintStyle:
-                                                                  TextStyle(
-                                                                fontSize: 16,
-                                                                color: AppColors
-                                                                    .marronOscuro,
-                                                              )), // TextStyle // Input Decoration
-                                                    ) // TextField
-                                                    ),
-                                                Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(20, 0, 20, 0),
-                                                    child: TextField(
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      controller:
-                                                          _emailController,
-                                                      decoration:
-                                                          InputDecoration(
-                                                              labelText:
-                                                                  "Correo",
-                                                              floatingLabelBehavior:
-                                                                  FloatingLabelBehavior
-                                                                      .always,
-                                                              hintText: user.email,
-                                                              hintStyle:
-                                                                  TextStyle(
-                                                                fontSize: 16,
-                                                                color: AppColors
-                                                                    .marronOscuro,
-                                                              )), // TextStyle // Input Decoration
-                                                    ) // TextF
-                                                    ),
-                                                Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(20, 0, 20, 0),
-                                                    child: TextField(
-                                                      controller:
-                                                          _phoneController,
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      decoration:
-                                                          InputDecoration(
-                                                              labelText:
-                                                                  "Teléfono",
-                                                              floatingLabelBehavior:
-                                                                  FloatingLabelBehavior
-                                                                      .always,
-                                                              hintText: user.phone,
-                                                              hintStyle:
-                                                                  TextStyle(
-                                                                fontSize: 16,
-                                                                color: AppColors
-                                                                    .marronOscuro,
-                                                              )), // TextStyle // Input Decoration
-                                                    ) // TextF
-                                                    ),
                                               ],
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(40)),
+                                              image: DecorationImage(
+                                                  fit: BoxFit.contain,
+                                                  image: AssetImage(
+                                                      "assets/cat.png"))),
+                                        ),
+                                        Positioned(
+                                          left: 80,
+                                          top: 80,
+                                          bottom: 0,
+                                          child: Container(
+                                            height: 35,
+                                            width: 35,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    width: 3,
+                                                    color: Theme.of(context)
+                                                        .scaffoldBackgroundColor)),
+                                            child: IconButton(
+                                              icon: const Icon(Icons.edit,
+                                                  color: Colors.white),
+                                              onPressed: () {
+                                                _displayDialog(context);
+                                              },
                                             ),
                                           ),
                                         ),
@@ -347,152 +461,108 @@ class EditProfile extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.fromLTRB(30, 0, 0, 0)),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: 120,
-                                        height: 120,
-                                        decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.white,
-                                                blurRadius: 0,
-                                                offset: Offset(0, 0),
-                                              ),
-                                            ],
-                                            shape: BoxShape.rectangle,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(40)),
-                                            image: DecorationImage(
-                                                fit: BoxFit.contain,
-                                                image: AssetImage(
-                                                    "assets/cat.png"))),
-                                      ),
-                                      Positioned(
-                                        left: 80,
-                                        top: 80,
-                                        bottom: 0,
-                                        child: Container(
-                                          height: 35,
-                                          width: 35,
-                                          decoration: BoxDecoration(
-                                              color: Colors.green,
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  width: 3,
-                                                  color: Theme.of(context)
-                                                      .scaffoldBackgroundColor)),
-                                          child: IconButton(
-                                            icon: const Icon(Icons.edit,
-                                                color: Colors.white),
-                                            onPressed: () {
-                                              _displayDialog(context);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ],
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-          child: Container(
-            width: 600,
-            height: 400,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white,
-                  blurRadius: 0,
-                  offset: Offset(0, 0),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
+        body: Container(
+          width: 600,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/noteBack.jpg"), fit: BoxFit.fill),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white,
+                blurRadius: 0,
+                offset: Offset(0, 0),
+              ),
+            ],
+          ),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints:
+                  BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
               child: Container(
-                width: 300,
-                decoration: BoxDecoration(
-                    color: AppColors.marronClaro,
-                    border: Border.all(
-                        width: 4,
-                        color: Theme.of(context).scaffoldBackgroundColor),
-                    boxShadow: [
-                      BoxShadow(
+
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Container(
+                    width: 300,
+                    decoration: BoxDecoration(
                         color: AppColors.marronClaro,
-                        blurRadius: 0,
-                        offset: Offset(0, 0),
-                      ),
-                    ]),
-                child: _buildTextField(),
+                        border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.marronClaro,
+                            blurRadius: 0,
+                            offset: Offset(0, 0),
+                          ),
+                        ]),
+                    child: _buildTextField(),
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  elevation: 10,
-                  primary: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(color: Colors.red),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, Routes.userProfile, (
+                        Route<dynamic> route) => false, arguments: TransactionID(user.id)
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    elevation: 10,
+                    primary: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
                   ),
-                ),
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(color: Colors.white),
-                )),
-            ElevatedButton(
-                onPressed: () {
-                  String text = _textController.text;
-                  String name = _nameController.text;
-                  String phone = _phoneController.text;
-                  // TODO UPDATE AQUI
+                  child: Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.white),
+                  )),
+              ElevatedButton(
+                  onPressed: () {
+                    String text = _textController.text;
+                    String name = _nameController.text;
+                    String phone = _phoneController.text;
+                    String email = _emailController.text;
+                print("$text, $name, $phone, $email, ${user.id}");
+                    updateShelter(user.id, name, phone, email, text);
 
-
-                },
-                style: ElevatedButton.styleFrom(
-                  elevation: 10,
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(color: Colors.green),
+                    // TODO UPDATE AQUI
+                  },
+                  style: ElevatedButton.styleFrom(
+                    elevation: 10,
+                    primary: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(color: Colors.green),
+                    ),
                   ),
-                ),
-                child: Text("Guardar")),
-          ],
+                  child: Text("Guardar")),
+            ],
+          ),
         ),
       ),
     );
@@ -532,6 +602,7 @@ class EditProfile extends StatelessWidget {
       margin: EdgeInsets.all(12),
       height: maxLines * 24.0,
       child: TextField(
+        controller: _textController,
         maxLines: maxLines,
       ),
     );
@@ -574,13 +645,14 @@ class EditProfile extends StatelessWidget {
     // print(response);
 
     User user = User(
+        id: id,
         username: arr.elementAt(0),
         email: arr.elementAt(1),
-        phone: arr.elementAt(2));
+        phone: arr.elementAt(2),
+        photopath: "");
 
     return user;
   }
-
 
   void FillShelter(String id) async {
     Map<String, String> loginBody = {
@@ -588,6 +660,21 @@ class EditProfile extends StatelessWidget {
       'shelter_id': id,
     };
     makePostRequest(url, loginBody);
+  }
+
+  void updateShelter(
+      String id, String name, String phone, String email, String text) async {
+    Map<String, String> update = {
+      'mode': 'updateUser',
+      'user_id': id,
+      'username': name,
+      'phone': phone,
+      'email': email,
+      'text': text,
+    };
+
+    HttpOverrides.global = MyHttpOverrides();
+    final response = await http.post(Uri.parse(url), body: update);
   }
 
   @override

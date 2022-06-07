@@ -124,7 +124,7 @@ class _RegisterUserState extends State<RegisterUser> {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
           content: Text('Registrado correctamente'),
           backgroundColor: Colors.green));
-      _MapPage();
+      _Login();
 
     } else {
       _messengerKey.currentState?.showSnackBar(const SnackBar(
@@ -166,9 +166,9 @@ class _RegisterUserState extends State<RegisterUser> {
           backgroundColor: Colors.red));
     }
   }
-  Future<void> _MapPage() async {
+  Future<void> _Login() async {
     Navigator.pushNamedAndRemoveUntil(
-        context, Routes.mapPage, (Route<dynamic> route) => false,
+        context, Routes.logApp, (Route<dynamic> route) => false,
         );
   }
 }
