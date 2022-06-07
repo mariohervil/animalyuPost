@@ -49,7 +49,7 @@ class _mapPageState extends State<mapPageState> {
               }),
               _buildDrawerItem(icon: Icons.map_rounded, text: 'Localize an animal', onTap: () => {
                 Navigator.pushNamedAndRemoveUntil(
-                  context, Routes.devProfile, (Route<dynamic> route) => false,
+                  context, Routes.goomap, (Route<dynamic> route) => false,
                 )
               }),
               _buildDrawerItem(icon: Icons.contact_phone, text: 'Contact Info', onTap: () => {
@@ -126,7 +126,7 @@ class _mapPageState extends State<mapPageState> {
   }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final googleOffices = await locations.getGoogleOffices();
+    final googleOffices = await locations.getSheltersLocations();
     setState(() {
       _markers.clear();
       for (locations.Office office in googleOffices.offices) {

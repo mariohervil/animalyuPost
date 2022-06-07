@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         Routes.devProfile: (context) => const DevProfileDesign(),
         Routes.userProfile: (context) => const UserProfileDesign(),
         Routes.otherShelterProfile: (context) => const OtherShelterProfileDesign(),
-        Routes.goomap: (context) => const MapsDemo(),
+        Routes.goomap: (context) => const mapPageHelp(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
