@@ -82,7 +82,7 @@ class Protectora {
   final String phone;
 }
 
-Future<Locations> getGoogleOffices() async {
+Future<Locations> getSheltersLocations() async {
   const googleLocationsURL = 'https://about.google/static/data/locations.json';
 
   // Pick the info of the json in the url of above

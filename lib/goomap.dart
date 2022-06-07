@@ -1,253 +1,100 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+import 'package:google_maps_in_flutter/src/app_colors.dart';
+import 'package:google_maps_in_flutter/src/locations.dart' as locations;
+import 'package:google_maps_in_flutter/src/page_arguments.dart';
+import 'package:google_maps_in_flutter/src/transaction_id.dart';
+import 'package:google_maps_in_flutter/util/page_directory.dart';
 
-late GoogleMapController mapController;
-void main() {
-  runApp(MapsDemo());
+class mapPageHelp extends StatefulWidget {
+  const mapPageHelp({Key? key}) : super(key: key);
+
+  State<mapPageHelp> createState() => _mapPageHelp();
 }
 
-class MapsDemo extends StatefulWidget {
-  const MapsDemo({Key? key}) : super(key: key);
+class _mapPageHelp extends State<mapPageHelp> {
+  TextEditingController _searchController = new TextEditingController();
 
-  @override
-  State<MapsDemo> createState() => MapsDemoState();
-}
+  late String address;
 
-class MapsDemoState extends State<MapsDemo> {
-  Completer<GoogleMapController> _controller = Completer();
-  static const LatLng _center = const LatLng(51, 10);
-  final Set<Marker> _markers = {};
-  LatLng _lastMapPosition = _center;
-  MapType _currentMapType = MapType.normal;
+  late String id;
 
+  late double lat;
 
-  void _currentLocation() async {
-    final GoogleMapController controller = await _controller.future;
-    LocationData? currentLocation;
-    var location = new Location();
-    try {
-      currentLocation = await location.getLocation();
-    } on Exception {
-      currentLocation = await location.getLocation();
-    }
+  late double lng;
 
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        bearing: 0,
-        target: LatLng(41.3879, 2.16992),
-        zoom: 18.0,
-      ),
-    ));
-  }
+  late String name;
 
-  _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-  }
+  late String phone;
 
-  _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
-  }
+  final Map<String, Marker> _markers = {};
 
-  _onMapTypeButtonPressed() {
-    setState(() {
-      _currentMapType = _currentMapType == MapType.normal
-          ? MapType.hybrid
-          : MapType.normal;
-    });
-  }
-
-  _onAddMarkerButtonPressed() {
-    _currentLocation();
-    setState(() {
-      _markers.add(
-          Marker(
-              markerId: MarkerId(_lastMapPosition.toString()),
-              position: _lastMapPosition,
-              infoWindow: InfoWindow(
-                  title: "Pizza Parlour",
-                  snippet: "This is a snippet",
-                  onTap: (){
-                  }
-              ),
-              onTap: (){
-              },
-              icon: BitmapDescriptor.defaultMarker));
-    });
-  }
+  var _controller;
 
 
-  Widget button(Function function, IconData icon) {
-    return FloatingActionButton(
-      onPressed: function(),
-      materialTapTargetSize: MaterialTapTargetSize.padded,
-      backgroundColor: Colors.blue,
-      child: Icon(
-        icon,
-        size: 36.0,
-      ),
-    );
-  }
+  late final ArgumentCallback<LatLng> onTap;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(40),
-
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: true,
-            title:  Column(
-              children: <Widget>[
-                const Text("Viewist", style: TextStyle(fontSize: 30.0),textAlign: TextAlign.center,),
-                const Text("", style: TextStyle(fontSize: 13.0),textAlign: TextAlign.center,),
-              ],
-            ),
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[
-                        Colors.blue,
-                        Colors.lightBlueAccent
-                      ])
-              ),
-
-            ),
+        appBar: AppBar(
+          leading:
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context, Routes.mapPage, (Route<dynamic> route) => false,
+              );
+            },
           ),
+          title: const Text('Rescue an animal!'),
+          backgroundColor: Colors.green[700],
+
         ),
-        body:
-        Stack(
-
-          children: <Widget>[
-
-            GoogleMap(
-              padding: new EdgeInsets.all(3.0),
-              onMapCreated: _onMapCreated,
-
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 6.0,
-              ),
-              mapType: _currentMapType,
-              markers: _markers,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              onCameraMove: _onCameraMove,
-            ),
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Column(
-                  children: <Widget>[
-                    button(_onMapTypeButtonPressed, Icons.map),
-                    SizedBox(
-                      height: 18.0,
-                    ),
-                    button(_onAddMarkerButtonPressed, Icons.add_location),
-                    SizedBox(
-                      height: 18.0,
-                    ),
-                    button(_currentLocation, Icons.location_searching),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: new EdgeInsets.all(0.0),
-            children: <Widget>[
-              DrawerHeader(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: <Color>[
-                        Colors.blue,
-                        Colors.lightBlueAccent
-                      ])
-                  ),
-                  child: Container(
-                    child: Column(
-                      children: <Widget>[
-                        Material(
-                          borderRadius: BorderRadius.all(Radius.circular(40.0)),
-                          elevation: 10,
-                          child: Padding(padding: EdgeInsets.all(8.0),
-                            child: Image.asset('images/a.png',width: 80,height: 80,),
-                          ),
-                        ),
-                        Padding(padding: EdgeInsets.all(2.0), child: Text ('Viewist', style: TextStyle(color: Colors.white, fontSize: 30.0,),
-                        )
-                        )],
-                    ),
-                  )),
-              CustomListTile(Icons.person, 'Profile', ()=>{}),
-              CustomListTile(Icons.notifications, 'Notification', ()=>{}),
-              CustomListTile(Icons.settings, 'Settings', ()=>{}),
-              CustomListTile(Icons.lock, 'Log Out', ()=>{}),
-            ],
+        body: GoogleMap(
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          zoomGesturesEnabled: true,
+          tiltGesturesEnabled: false,
+          initialCameraPosition:  const CameraPosition(
+            target: const LatLng(41.3879, 2.16992),
+            zoom: 12,
           ),
-        ),
+          markers: _markers.values.toSet(),
+          onTap: _handleTap,
 
+        ),
+        floatingActionButton:  ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.green[700],
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          ),
+          onPressed: () {},
+          child: const Text('Pedir ayuda'),
+        ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-
     );
+  }
+
+  _handleTap(LatLng point) {
+    setState(() {
+      final marker =Marker(
+        markerId: MarkerId(point.toString()),
+        position: point,
+        infoWindow: InfoWindow(
+          title: 'Lugar a marcar',
+        ),
+        icon:
+        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+      );
+     _markers["Tap"] = marker;
+    });
   }
 }
 
-class CustomListTile extends StatelessWidget {
-  IconData icon;
-  String text;
-  Function onTap;
 
-  CustomListTile(this.icon,this.text,this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement createState
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.grey.shade400))
-        ),
-        child: InkWell(
-          splashColor: Colors.lightBlueAccent,
-          onTap: onTap(),
-          child: Container(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(icon),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(text, style: TextStyle(
-                          fontSize: 16.0
-                      ),),
-                    ),
-                  ],
-                ),
-                Icon(Icons.arrow_right)
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-  }
-
-
-}

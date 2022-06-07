@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/src/locations.dart' as locations;
 import 'package:google_maps_in_flutter/src/page_arguments.dart';
-import 'package:google_maps_in_flutter/src/shelter.dart';
 import 'package:google_maps_in_flutter/src/transaction_id.dart';
 import 'package:google_maps_in_flutter/util/page_directory.dart';
 
@@ -24,6 +23,7 @@ class _mapPageState extends State<mapPageState> {
   late double lng;
 
   late String name;
+
   late String phone;
 
   static late String userId;
@@ -50,12 +50,13 @@ class _mapPageState extends State<mapPageState> {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      /**/home: Scaffold(
+      home: Scaffold(
         appBar: AppBar(
           title: const Text('Animalyu'),
           backgroundColor: Colors.green[700],
+
         ),
-        drawer: Drawer(
+        drawer:Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -71,16 +72,12 @@ class _mapPageState extends State<mapPageState> {
                           arguments: TransactionID(userId)
                         )
                       }),
-              _buildDrawerItem(
-                  icon: Icons.map_rounded,
-                  text: 'Localize an animal',
-                  onTap: () => {
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          Routes.devProfile,
-                          (Route<dynamic> route) => false,
-                        )
-                      }),
+
+              _buildDrawerItem(icon: Icons.map_rounded, text: 'Localize an animal', onTap: () => {
+                Navigator.pushNamedAndRemoveUntil(
+                  context, Routes.goomap, (Route<dynamic> route) => false,
+                )
+              }),
               _buildDrawerItem(
                   icon: Icons.contact_phone,
                   text: 'Contact Info',
@@ -101,6 +98,24 @@ class _mapPageState extends State<mapPageState> {
                           (Route<dynamic> route) => false,
                         )
                       }),
+              _buildDrawerItem(icon: Icons.account_circle, text: 'Profile', onTap: () => {
+                Navigator.pushNamedAndRemoveUntil(
+                  context, Routes.userProfile, (Route<dynamic> route) => false,
+                )
+              }),
+              _buildDrawerItem(icon: Icons.map_rounded, text: 'Localize an animal', onTap: () => {
+                Navigator.pushNamedAndRemoveUntil(
+                  context, Routes.goomap, (Route<dynamic> route) => false,
+                )
+              }),
+              _buildDrawerItem(icon: Icons.contact_phone, text: 'Contact Info', onTap: () => {
+              Navigator.pushNamedAndRemoveUntil(
+              context, Routes.devProfile, (Route<dynamic> route) => false,
+              )}),
+              _buildDrawerItem(icon: Icons.payment, text: 'Donate to our team ', onTap: () => {
+                Navigator.pushNamedAndRemoveUntil(
+                  context, Routes.payPage, (Route<dynamic> route) => false,
+                )}),
               const Divider(),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 300, 10, 0),
@@ -174,7 +189,7 @@ class _mapPageState extends State<mapPageState> {
   }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final googleOffices = await locations.getGoogleOffices();
+    final googleOffices = await locations.getSheltersLocations();
     setState(() {
       _markers.clear();
       for (locations.Office office in googleOffices.offices) {
@@ -201,3 +216,5 @@ class _mapPageState extends State<mapPageState> {
     });
   }
 }
+
+

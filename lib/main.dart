@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         Routes.devProfile: (context) => const DevProfileDesign(),
         Routes.userProfile: (context) => const UserProfileDesign(),
         Routes.otherShelterProfile: (context) => const OtherShelterProfileDesign(),
+        Routes.goomap: (context) => const mapPageHelp(),
         Routes.animalsShelter: (context) => const AnimalByShelter(),
         Routes.animalsScroll: (context) => const AnimalScroll(),
         Routes.goomap: (context) => const MapsDemo(),
