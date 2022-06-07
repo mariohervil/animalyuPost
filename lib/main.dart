@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         Routes.goomap: (context) => const mapPageHelp(),
         Routes.animalsShelter: (context) => const AnimalByShelter(),
         Routes.animalsScroll: (context) => const AnimalScroll(),
-        Routes.goomap: (context) => const MapsDemo(),
+        //Routes.goomap: (context) => const MapsDemo(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),

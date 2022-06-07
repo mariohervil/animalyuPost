@@ -31,7 +31,6 @@ class _mapPageHelp extends State<mapPageHelp> {
 
   var _controller;
 
-
   late final ArgumentCallback<LatLng> onTap;
 
   @override
@@ -40,19 +39,19 @@ class _mapPageHelp extends State<mapPageHelp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          leading:
-          IconButton(
+          leading: IconButton(
             icon: Icon(Icons.arrow_back),
             color: Colors.white,
             onPressed: () {
               Navigator.pushNamedAndRemoveUntil(
-                context, Routes.mapPage, (Route<dynamic> route) => false,
+                context,
+                Routes.mapPage,
+                (Route<dynamic> route) => false,
               );
             },
           ),
           title: const Text('Rescue an animal!'),
           backgroundColor: Colors.green[700],
-
         ),
         body: GoogleMap(
           onMapCreated: (GoogleMapController controller) {
@@ -60,15 +59,14 @@ class _mapPageHelp extends State<mapPageHelp> {
           },
           zoomGesturesEnabled: true,
           tiltGesturesEnabled: false,
-          initialCameraPosition:  const CameraPosition(
+          initialCameraPosition: const CameraPosition(
             target: const LatLng(41.3879, 2.16992),
             zoom: 12,
           ),
           markers: _markers.values.toSet(),
           onTap: _handleTap,
-
         ),
-        floatingActionButton:  ElevatedButton(
+        floatingActionButton: ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: Colors.green[700],
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -76,25 +74,23 @@ class _mapPageHelp extends State<mapPageHelp> {
           onPressed: () {},
           child: const Text('Pedir ayuda'),
         ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
 
   _handleTap(LatLng point) {
     setState(() {
-      final marker =Marker(
+      final marker = Marker(
         markerId: MarkerId(point.toString()),
         position: point,
         infoWindow: InfoWindow(
           title: 'Lugar a marcar',
         ),
         icon:
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
+            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       );
-     _markers["Tap"] = marker;
+      _markers["Tap"] = marker;
     });
   }
 }
-
-

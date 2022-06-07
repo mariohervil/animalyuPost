@@ -189,7 +189,7 @@ class _mapPageState extends State<mapPageState> {
   }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final googleOffices = await locations.getSheltersLocations();
+    final googleOffices = await locations.getGoogleOffices();
     setState(() {
       _markers.clear();
       for (locations.Office office in googleOffices.offices) {
