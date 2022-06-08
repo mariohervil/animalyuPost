@@ -544,7 +544,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
                             context,
                             Routes.mapPage,
                             (Route<dynamic> route) => false,
-                            arguments: TransactionID(shelter.id)
+                            arguments: TransactionID(shelter.id),
                           );
                         },
                       ),
