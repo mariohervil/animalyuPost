@@ -5,7 +5,7 @@ import 'package:prueba/RegisterApp.dart';
 
 void main(){runApp(const MaterialApp(
 title: 'Your title',
-home: MyApp(),));}
+home: MyApp(),)) ;}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
